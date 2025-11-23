@@ -1,3 +1,4 @@
+import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -13,6 +14,7 @@ import AppText from "~/components/common/app-text";
 import AppButton from "~/components/common/button";
 import ControlledPhoneInput from "~/components/form/controlled-phone-input";
 import ControlledTextField from "~/components/form/controlled-textfield";
+import { typography } from "~/theme";
 import colors from "~/theme/colors";
 import { emailValidation, passwordValidation } from "~/utils/form-validation";
 
@@ -43,14 +45,36 @@ export default function RegisterScreen() {
       console.log("Registration data:", data);
 
       // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      // Navigate to main app or verification screen
-      router.replace("/(auth)/login" as any);
+      // Navigate to main app (client home) after successful registration
+      router.replace("/(main)/(tabs)");
     } catch (error) {
       console.error("Registration error:", error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleGoogleSignup = async () => {
+    try {
+      console.log("Google signup");
+      // TODO: Implement Google signup
+      await new Promise((resolve) => setTimeout(resolve, 800));
+      router.replace("/(main)/(tabs)");
+    } catch (error) {
+      console.error("Google signup error:", error);
+    }
+  };
+
+  const handleFacebookSignup = async () => {
+    try {
+      console.log("Facebook signup");
+      // TODO: Implement Facebook signup
+      await new Promise((resolve) => setTimeout(resolve, 800));
+      router.replace("/(main)/(tabs)");
+    } catch (error) {
+      console.error("Facebook signup error:", error);
     }
   };
 
@@ -127,11 +151,10 @@ export default function RegisterScreen() {
 
           {/* Terms and Conditions */}
           <View style={styles.termsContainer}>
-            <AppText style={styles.termsText}>
-              By signing up, you agree to our{" "}
-              <AppText style={styles.termsLink}>Terms & Conditions</AppText> and{" "}
-              <AppText style={styles.termsLink}>Privacy Policy</AppText>
-            </AppText>
+            <AppText style={styles.termsText}>By signing up, you agree to our </AppText>
+            <AppText style={styles.termsLink}>Terms & Conditions</AppText>
+            <AppText style={styles.termsLink}> and </AppText>
+            <AppText style={styles.termsLink}>Privacy Policy</AppText>
           </View>
 
           {/* Register Button */}
@@ -155,26 +178,29 @@ export default function RegisterScreen() {
 
           {/* Social Login Buttons */}
           <View style={styles.socialContainer}>
-            <TouchableOpacity style={styles.socialButton}>
-              <AppText style={styles.socialText}>G</AppText>
+            <TouchableOpacity
+              style={styles.socialButton}
+              onPress={handleGoogleSignup}
+              activeOpacity={0.7}
+            >
+              <Ionicons name="logo-google" size={24} color={colors.error} />
             </TouchableOpacity>
-            <TouchableOpacity style={styles.socialButton}>
-              <AppText style={styles.socialText}>f</AppText>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.socialButton}>
-              <AppText style={styles.socialText}>🍎</AppText>
+            <TouchableOpacity
+              style={styles.socialButton}
+              onPress={handleFacebookSignup}
+              activeOpacity={0.7}
+            >
+              <Ionicons name="logo-facebook" size={24} color="#1877F2" />
             </TouchableOpacity>
           </View>
         </View>
 
         {/* Footer */}
         <View style={styles.footer}>
-          <AppText style={styles.footerText}>
-            Already have an account?{" "}
-            <TouchableOpacity onPress={handleLogin} activeOpacity={0.7}>
-              <AppText style={styles.footerLink}>Log In</AppText>
-            </TouchableOpacity>
-          </AppText>
+          <AppText style={styles.footerText}>Already have an account? </AppText>
+          <TouchableOpacity onPress={handleLogin} activeOpacity={0.7}>
+            <AppText style={styles.footerLink}>Log In</AppText>
+          </TouchableOpacity>
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
@@ -214,16 +240,19 @@ const styles = StyleSheet.create({
   },
   termsContainer: {
     marginTop: 4,
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "center",
   },
   termsText: {
-    fontSize: 14,
-    fontWeight: "400",
     color: colors.gray600,
     lineHeight: 20,
     textAlign: "center",
+    ...typography.caption,
   },
   termsLink: {
     color: colors.primary400,
+    ...typography.caption,
     fontWeight: "500",
   },
   registerButton: {
@@ -259,22 +288,26 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: colors.white,
-  },
-  socialText: {
-    fontSize: 24,
-    fontWeight: "600",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 1,
   },
   footer: {
     marginTop: 32,
     alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "center",
+    gap: 4,
   },
   footerText: {
-    fontSize: 14,
-    fontWeight: "400",
+    ...typography.caption,
     color: colors.gray600,
   },
   footerLink: {
     color: colors.primary400,
     fontWeight: "600",
+    ...typography.caption,
   },
 });

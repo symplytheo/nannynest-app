@@ -1,4 +1,3 @@
-import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -17,33 +16,40 @@ import { typography } from "~/theme";
 import colors from "~/theme/colors";
 import { emailValidation } from "~/utils/form-validation";
 
-type LoginFormData = {
+type RoleSelectionLoginFormData = {
   email: string;
   password: string;
+  role: "client" | "nanny";
 };
 
-export default function LoginScreen() {
+export default function RoleSelectionLoginScreen() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [selectedRole, setSelectedRole] = useState<"client" | "nanny">("client");
 
-  const { control, handleSubmit } = useForm<LoginFormData>({
+  const { control, handleSubmit } = useForm<RoleSelectionLoginFormData>({
     defaultValues: {
       email: "",
       password: "",
+      role: "client",
     },
   });
 
-  const onSubmit = async (data: LoginFormData) => {
+  const onSubmit = async (data: RoleSelectionLoginFormData) => {
     setLoading(true);
     try {
-      // TODO: Implement login API call
-      console.log("Login data:", data);
+      const loginData = { ...data, role: selectedRole };
+      console.log("Login data:", loginData);
 
       // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1500));
 
-      // Navigate to main app (client home)
-      router.replace("/(main)/(tabs)");
+      // Navigate based on role
+      if (selectedRole === "nanny") {
+        router.replace("/(nanny)/(tabs)" as any);
+      } else {
+        router.replace("/(main)/(tabs)" as any);
+      }
     } catch (error) {
       console.error("Login error:", error);
     } finally {
@@ -51,29 +57,9 @@ export default function LoginScreen() {
     }
   };
 
-  const handleGoogleLogin = async () => {
-    try {
-      console.log("Google login");
-      // TODO: Implement Google login
-      await new Promise((resolve) => setTimeout(resolve, 800));
-      router.replace("/(main)/(tabs)");
-    } catch (error) {
-      console.error("Google login error:", error);
-    }
-  };
-
-  const handleFacebookLogin = async () => {
-    try {
-      console.log("Facebook login");
-      // TODO: Implement Facebook login
-      await new Promise((resolve) => setTimeout(resolve, 800));
-      router.replace("/(main)/(tabs)");
-    } catch (error) {
-      console.error("Facebook login error:", error);
-    }
-  };
-
   const handleRegister = () => {
+    // Both roles use the same register screen for now
+    // In production, you can differentiate by passing role as param
     router.push("/(auth)/register" as any);
   };
 
@@ -95,7 +81,44 @@ export default function LoginScreen() {
         {/* Header */}
         <View style={styles.header}>
           <AppText style={styles.title}>Welcome Back</AppText>
-          <AppText style={styles.subtitle}>Log in to continue to NannyNest</AppText>
+          <AppText style={styles.subtitle}>Select your role to continue</AppText>
+        </View>
+
+        {/* Role Selection */}
+        <View style={styles.roleContainer}>
+          <TouchableOpacity
+            style={[styles.roleCard, selectedRole === "client" && styles.roleCardActive]}
+            onPress={() => setSelectedRole("client")}
+            activeOpacity={0.7}
+          >
+            <View style={styles.roleIcon}>
+              <AppText style={styles.roleEmoji}>👨‍👩‍👧</AppText>
+            </View>
+            <AppText style={styles.roleTitle}>I&apos;m a client</AppText>
+            <AppText style={styles.roleDescription}>Find and book trusted nannies</AppText>
+            {selectedRole === "client" && (
+              <View style={styles.selectedBadge}>
+                <AppText style={styles.selectedCheck}>✓</AppText>
+              </View>
+            )}
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[styles.roleCard, selectedRole === "nanny" && styles.roleCardActive]}
+            onPress={() => setSelectedRole("nanny")}
+            activeOpacity={0.7}
+          >
+            <View style={styles.roleIcon}>
+              <AppText style={styles.roleEmoji}>👩‍🍼</AppText>
+            </View>
+            <AppText style={styles.roleTitle}>I&apos;m a Nanny</AppText>
+            <AppText style={styles.roleDescription}>Offer childcare services</AppText>
+            {selectedRole === "nanny" && (
+              <View style={styles.selectedBadge}>
+                <AppText style={styles.selectedCheck}>✓</AppText>
+              </View>
+            )}
+          </TouchableOpacity>
         </View>
 
         {/* Form */}
@@ -141,31 +164,6 @@ export default function LoginScreen() {
             fullWidth
             style={styles.loginButton}
           />
-
-          {/* Divider */}
-          <View style={styles.divider}>
-            <View style={styles.dividerLine} />
-            <AppText style={styles.dividerText}>Or continue with</AppText>
-            <View style={styles.dividerLine} />
-          </View>
-
-          {/* Social Login Buttons */}
-          <View style={styles.socialContainer}>
-            <TouchableOpacity
-              style={styles.socialButton}
-              onPress={handleGoogleLogin}
-              activeOpacity={0.7}
-            >
-              <Ionicons name="logo-google" size={24} color={colors.error} />
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.socialButton}
-              onPress={handleFacebookLogin}
-              activeOpacity={0.7}
-            >
-              <Ionicons name="logo-facebook" size={24} color="#1877F2" />
-            </TouchableOpacity>
-          </View>
         </View>
 
         {/* Footer */}
@@ -190,11 +188,11 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     paddingHorizontal: 24,
-    paddingTop: 80,
+    paddingTop: 60,
     paddingBottom: 40,
   },
   header: {
-    marginBottom: 40,
+    marginBottom: 32,
   },
   title: {
     fontSize: 28,
@@ -207,6 +205,59 @@ const styles = StyleSheet.create({
     fontWeight: "400",
     color: colors.gray600,
     lineHeight: 24,
+  },
+  roleContainer: {
+    flexDirection: "row",
+    gap: 12,
+    marginBottom: 32,
+  },
+  roleCard: {
+    flex: 1,
+    padding: 20,
+    backgroundColor: colors.gray50,
+    borderRadius: 16,
+    borderWidth: 2,
+    borderColor: colors.gray200,
+    alignItems: "center",
+    position: "relative",
+  },
+  roleCardActive: {
+    backgroundColor: colors.primary100,
+    borderColor: colors.primary400,
+  },
+  roleIcon: {
+    marginBottom: 12,
+  },
+  roleEmoji: {
+    fontSize: 40,
+  },
+  roleTitle: {
+    fontSize: 16,
+    fontWeight: "700",
+    color: colors.gray900,
+    marginBottom: 4,
+    textAlign: "center",
+  },
+  roleDescription: {
+    fontSize: 12,
+    color: colors.gray600,
+    textAlign: "center",
+  },
+  selectedBadge: {
+    position: "absolute",
+    top: 8,
+    right: 8,
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: colors.primary400,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  selectedCheck: {
+    fontSize: 14,
+    fontWeight: "700",
+    color: colors.white,
   },
   form: {
     gap: 20,
@@ -222,42 +273,6 @@ const styles = StyleSheet.create({
   },
   loginButton: {
     marginTop: 8,
-  },
-  divider: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginVertical: 24,
-    gap: 12,
-  },
-  dividerLine: {
-    flex: 1,
-    height: 1,
-    backgroundColor: colors.gray200,
-  },
-  dividerText: {
-    fontSize: 14,
-    fontWeight: "400",
-    color: colors.gray500,
-  },
-  socialContainer: {
-    flexDirection: "row",
-    justifyContent: "center",
-    gap: 16,
-  },
-  socialButton: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    borderWidth: 1,
-    borderColor: colors.gray200,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: colors.white,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 1,
   },
   footer: {
     marginTop: 32,

@@ -6,7 +6,7 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    borderRadius: 8,
+    borderRadius: 999, // Pill shape with fully rounded corners
     paddingHorizontal: 16,
   },
   padless: {
@@ -58,7 +58,7 @@ export const styles = StyleSheet.create({
   // Outlined
   outlined: {
     borderWidth: 1.5,
-    backgroundColor: "transparent",
+    backgroundColor: "transclient",
   },
   outlined_brand: { borderColor: colors.primary400 },
   outlined_error: { borderColor: colors.error },
@@ -71,7 +71,7 @@ export const styles = StyleSheet.create({
   outlined_success_text: { color: colors.success },
 
   // Tonal (custom style, adjust as needed)
-  tonal: { backgroundColor: "transparent" }, // Base tonal style
+  tonal: { backgroundColor: "transclient" }, // Base tonal style
   tonal_brand: { backgroundColor: colors.primary100 },
   tonal_error: { backgroundColor: colors.error + "20" }, // 20% opacity
   tonal_success: { backgroundColor: colors.success + "20" }, // 20% opacity
@@ -83,10 +83,10 @@ export const styles = StyleSheet.create({
   tonal_success_text: { color: colors.success },
 
   // Text
-  text: { backgroundColor: "transparent" },
-  text_brand: { backgroundColor: "transparent" },
-  text_error: { backgroundColor: "transparent" },
-  text_success: { backgroundColor: "transparent" },
+  text: { backgroundColor: "transclient" },
+  text_brand: { backgroundColor: "transclient" },
+  text_error: { backgroundColor: "transclient" },
+  text_success: { backgroundColor: "transclient" },
 
   // Text variant text colors (same as the variant colors)
   text_text: { color: colors.primary400 },
