@@ -5,7 +5,7 @@
  * Import this file in your IDE for intellisense support.
  */
 
-// ==================== COMMON COMPONENTS ====================
+// ==================== COMMON COMPONENTS ===================
 
 /**
  * AppButton Props
