@@ -57,9 +57,7 @@ export default function SavedNanniesScreen() {
           <View style={styles.emptyState}>
             <Ionicons name="heart-outline" size={64} color={colors.gray300} />
             <AppText style={styles.emptyText}>No saved nannies yet</AppText>
-            <AppText style={styles.emptySubtext}>
-              Nannies you save will appear here
-            </AppText>
+            <AppText style={styles.emptySubtext}>Nannies you save will appear here</AppText>
           </View>
         ) : (
           <View style={styles.nanniesContainer}>

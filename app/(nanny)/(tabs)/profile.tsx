@@ -17,7 +17,12 @@ type MenuItem = {
 const MENU_ITEMS: MenuItem[] = [
   { id: "1", label: "Personal Info", icon: "person-outline", route: "/(nanny)/personal-info" },
   { id: "2", label: "My Wallet", icon: "wallet-outline", route: "/(nanny)/wallet" },
-  { id: "3", label: "My Documents", icon: "document-text-outline", route: "/(nanny)/kyc-documents" },
+  {
+    id: "3",
+    label: "My Documents",
+    icon: "document-text-outline",
+    route: "/(nanny)/kyc-documents",
+  },
   { id: "4", label: "Availability", icon: "calendar-outline" },
   { id: "5", label: "Payment Settings", icon: "card-outline" },
   { id: "6", label: "Help & Support", icon: "help-circle-outline" },
