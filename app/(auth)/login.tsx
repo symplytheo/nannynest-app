@@ -1,4 +1,3 @@
-import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -10,11 +9,11 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { AuthHeader, SocialLoginButtons } from "~/components/auth";
+import { authStyles } from "~/components/auth/auth-styles";
 import AppText from "~/components/common/app-text";
 import AppButton from "~/components/common/button";
 import ControlledTextField from "~/components/form/controlled-textfield";
-import { typography } from "~/theme";
-import colors from "~/theme/colors";
 import { emailValidation } from "~/utils/form-validation";
 
 type LoginFormData = {
@@ -36,14 +35,17 @@ export default function LoginScreen() {
   const onSubmit = async (data: LoginFormData) => {
     setLoading(true);
     try {
-      // TODO: Implement login API call
       console.log("Login data:", data);
 
       // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      // Navigate to main app (client home)
-      router.replace("/(main)/(tabs)");
+      // Navigate based on email (temporary logic)
+      if (data.email.toLowerCase().includes("client")) {
+        router.replace("/(main)/(tabs)");
+      } else {
+        router.replace("/(nanny)/(tabs)");
+      }
     } catch (error) {
       console.error("Login error:", error);
     } finally {
@@ -52,128 +54,107 @@ export default function LoginScreen() {
   };
 
   const handleGoogleLogin = async () => {
-    try {
-      console.log("Google login");
-      // TODO: Implement Google login
-      await new Promise((resolve) => setTimeout(resolve, 800));
-      router.replace("/(main)/(tabs)");
-    } catch (error) {
-      console.error("Google login error:", error);
-    }
+    console.log("Google login");
+  };
+
+  const handleAppleLogin = async () => {
+    console.log("Apple login");
   };
 
   const handleFacebookLogin = async () => {
-    try {
-      console.log("Facebook login");
-      // TODO: Implement Facebook login
-      await new Promise((resolve) => setTimeout(resolve, 800));
-      router.replace("/(main)/(tabs)");
-    } catch (error) {
-      console.error("Facebook login error:", error);
-    }
+    console.log("Facebook login");
   };
 
-  const handleRegister = () => {
-    router.push("/(auth)/register" as any);
+  const handleSignUp = () => {
+    router.push("/(auth)/onboarding" as any);
   };
 
-  const handleForgotPassword = () => {
+  const handleResetPassword = () => {
     router.push("/(auth)/reset-password" as any);
   };
 
   return (
     <KeyboardAvoidingView
-      style={styles.container}
+      style={authStyles.container}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
       <ScrollView
-        style={styles.scrollView}
-        contentContainerStyle={styles.scrollContent}
+        style={authStyles.scrollView}
+        contentContainerStyle={authStyles.scrollContent}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
       >
         {/* Header */}
-        <View style={styles.header}>
-          <AppText style={styles.title}>Welcome Back</AppText>
-          <AppText style={styles.subtitle}>Log in to continue to NannyNest</AppText>
-        </View>
+        <AuthHeader title="Log in your account" />
 
         {/* Form */}
-        <View style={styles.form}>
-          <ControlledTextField
-            control={control}
-            name="email"
-            label="Email Address"
-            placeholder="Enter your email"
-            keyboardType="email-address"
-            autoCapitalize="none"
-            rules={emailValidation}
-          />
-
-          <View>
+        <View style={authStyles.content}>
+          <View style={authStyles.form}>
             <ControlledTextField
               control={control}
-              name="password"
-              label="Password"
-              placeholder="Enter your password"
-              isPassword
-              rules={{ required: "Password is required" }}
+              name="email"
+              label="Email"
+              placeholder="Enter email address"
+              keyboardType="email-address"
+              autoCapitalize="none"
+              rules={emailValidation}
             />
 
-            {/* Forgot Password Link */}
-            <TouchableOpacity
-              onPress={handleForgotPassword}
-              style={styles.forgotPasswordContainer}
-              activeOpacity={0.7}
-            >
-              <AppText style={styles.forgotPasswordText}>Forgot Password?</AppText>
-            </TouchableOpacity>
+            <View>
+              <ControlledTextField
+                control={control}
+                name="password"
+                label="Password"
+                placeholder="Enter your password"
+                isPassword
+                rules={{ required: "Password is required" }}
+              />
+
+              {/* Reset Password Link */}
+              <TouchableOpacity
+                onPress={handleResetPassword}
+                style={styles.resetPasswordContainer}
+                activeOpacity={0.7}
+              >
+                <AppText style={authStyles.secondaryLinkText}>Reset password</AppText>
+              </TouchableOpacity>
+            </View>
+
+            {/* Login Button */}
+            <AppButton
+              label="Log in"
+              variant="filled"
+              color="brand"
+              onPress={handleSubmit(onSubmit)}
+              loading={loading}
+              disabled={loading}
+              fullWidth
+              style={styles.loginButton}
+              size="small"
+            />
           </View>
 
-          {/* Login Button */}
-          <AppButton
-            label="Log In"
-            variant="filled"
-            color="brand"
-            onPress={handleSubmit(onSubmit)}
-            loading={loading}
-            disabled={loading}
-            fullWidth
-            style={styles.loginButton}
-          />
-
           {/* Divider */}
-          <View style={styles.divider}>
-            <View style={styles.dividerLine} />
-            <AppText style={styles.dividerText}>Or continue with</AppText>
-            <View style={styles.dividerLine} />
+          <View style={authStyles.divider}>
+            <View style={authStyles.dividerLine} />
+            <AppText style={authStyles.dividerText}>or sign in with</AppText>
+            <View style={authStyles.dividerLine} />
           </View>
 
           {/* Social Login Buttons */}
-          <View style={styles.socialContainer}>
-            <TouchableOpacity
-              style={styles.socialButton}
-              onPress={handleGoogleLogin}
-              activeOpacity={0.7}
-            >
-              <Ionicons name="logo-google" size={24} color={colors.error} />
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.socialButton}
-              onPress={handleFacebookLogin}
-              activeOpacity={0.7}
-            >
-              <Ionicons name="logo-facebook" size={24} color="#1877F2" />
+          <SocialLoginButtons
+            onGooglePress={handleGoogleLogin}
+            onApplePress={handleAppleLogin}
+            onFacebookPress={handleFacebookLogin}
+          />
+
+          {/* Footer */}
+          <View style={authStyles.footer}>
+            <AppText style={authStyles.footerText}>Don&apos;t have an account? </AppText>
+            <TouchableOpacity onPress={handleSignUp} activeOpacity={0.7}>
+              <AppText style={authStyles.footerLink}>Sign up</AppText>
             </TouchableOpacity>
           </View>
-        </View>
-
-        {/* Footer */}
-        <View style={styles.footer}>
-          <AppText style={styles.footerText}>{`Don't have an account? `}</AppText>
-          <TouchableOpacity onPress={handleRegister} activeOpacity={0.7}>
-            <AppText style={styles.footerLink}>Sign Up</AppText>
-          </TouchableOpacity>
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
@@ -181,98 +162,11 @@ export default function LoginScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.white,
-  },
-  scrollView: {
-    flex: 1,
-  },
-  scrollContent: {
-    paddingHorizontal: 24,
-    paddingTop: 80,
-    paddingBottom: 40,
-  },
-  header: {
-    marginBottom: 40,
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: "700",
-    color: colors.gray900,
-    marginBottom: 8,
-  },
-  subtitle: {
-    fontSize: 16,
-    fontWeight: "400",
-    color: colors.gray600,
-    lineHeight: 24,
-  },
-  form: {
-    gap: 20,
-  },
-  forgotPasswordContainer: {
+  resetPasswordContainer: {
     alignSelf: "flex-end",
-    marginTop: 8,
-  },
-  forgotPasswordText: {
-    fontSize: 14,
-    fontWeight: "500",
-    color: colors.primary400,
+    marginTop: -10,
   },
   loginButton: {
-    marginTop: 8,
-  },
-  divider: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginVertical: 24,
-    gap: 12,
-  },
-  dividerLine: {
-    flex: 1,
-    height: 1,
-    backgroundColor: colors.gray200,
-  },
-  dividerText: {
-    fontSize: 14,
-    fontWeight: "400",
-    color: colors.gray500,
-  },
-  socialContainer: {
-    flexDirection: "row",
-    justifyContent: "center",
-    gap: 16,
-  },
-  socialButton: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    borderWidth: 1,
-    borderColor: colors.gray200,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: colors.white,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 1,
-  },
-  footer: {
     marginTop: 32,
-    alignItems: "center",
-    flexDirection: "row",
-    justifyContent: "center",
-    gap: 4,
-  },
-  footerText: {
-    ...typography.caption,
-    color: colors.gray600,
-  },
-  footerLink: {
-    color: colors.primary400,
-    fontWeight: "600",
-    ...typography.caption,
   },
 });

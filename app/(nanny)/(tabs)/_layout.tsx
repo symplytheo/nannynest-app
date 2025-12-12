@@ -9,36 +9,50 @@ export default function NannyTabLayout() {
       screenOptions={{
         headerShown: false,
         tabBarActiveTintColor: colors.primary400,
-        tabBarInactiveTintColor: colors.gray400,
+        tabBarInactiveTintColor: colors.gray500,
         tabBarStyle: {
           backgroundColor: colors.white,
-          borderTopColor: colors.gray200,
-          borderTopWidth: 1,
-          height: 88,
-          paddingBottom: 32,
-          paddingTop: 12,
+          borderTopWidth: 0,
+          height: 80,
+          paddingBottom: 28,
+          paddingTop: 8,
+          shadowColor: "#000",
+          shadowOffset: { width: 0, height: -2 },
+          shadowOpacity: 0.05,
+          shadowRadius: 8,
+          elevation: 8,
         },
         tabBarLabelStyle: {
-          fontSize: 12,
-          fontWeight: "500",
+          fontSize: 11,
+          fontWeight: "600",
+          marginTop: 4,
         },
       }}
     >
       <Tabs.Screen
         name="index"
         options={{
-          title: "Dashboard",
+          title: "Home",
           tabBarIcon: ({ color, focused }) => (
-            <Ionicons name={focused ? "grid" : "grid-outline"} size={24} color={color} />
+            <Ionicons name={focused ? "home" : "home-outline"} size={26} color={color} />
           ),
         }}
       />
       <Tabs.Screen
         name="bookings"
         options={{
-          title: "Bookings",
+          title: "Orders",
           tabBarIcon: ({ color, focused }) => (
-            <Ionicons name={focused ? "calendar" : "calendar-outline"} size={24} color={color} />
+            <Ionicons name={focused ? "time" : "time-outline"} size={26} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="wallet"
+        options={{
+          title: "Wallet",
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons name={focused ? "wallet" : "wallet-outline"} size={26} color={color} />
           ),
         }}
       />
@@ -47,7 +61,7 @@ export default function NannyTabLayout() {
         options={{
           title: "Profile",
           tabBarIcon: ({ color, focused }) => (
-            <Ionicons name={focused ? "person" : "person-outline"} size={24} color={color} />
+            <Ionicons name={focused ? "person" : "person-outline"} size={26} color={color} />
           ),
         }}
       />

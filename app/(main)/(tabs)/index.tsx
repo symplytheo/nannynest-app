@@ -1,179 +1,68 @@
 import { Ionicons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
-import React, { useState } from "react";
-import { ScrollView, StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import Feather from "@expo/vector-icons/Feather";
+import React from "react";
+import { Dimensions, StyleSheet, TouchableOpacity, View } from "react-native";
+import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import AppText from "~/components/common/app-text";
+import { BottomDrawer } from "~/components/main/home";
 import colors from "~/theme/colors";
+import { fontWeights } from "~/theme/typography";
 
-type NannyCard = {
-  id: string;
-  name: string;
-  rating: number;
-  reviews: number;
-  hourlyRate: number;
-  distance: string;
-  experience: string;
-  image?: string;
-  isAvailable: boolean;
-};
-
-const MOCK_NANNIES: NannyCard[] = [
-  {
-    id: "1",
-    name: "Sarah Johnson",
-    rating: 4.8,
-    reviews: 124,
-    hourlyRate: 25,
-    distance: "0.5 km",
-    experience: "5 years",
-    isAvailable: true,
-  },
-  {
-    id: "2",
-    name: "Emily Davis",
-    rating: 4.9,
-    reviews: 98,
-    hourlyRate: 28,
-    distance: "1.2 km",
-    experience: "7 years",
-    isAvailable: true,
-  },
-  {
-    id: "3",
-    name: "Jessica Brown",
-    rating: 4.7,
-    reviews: 156,
-    hourlyRate: 22,
-    distance: "2.1 km",
-    experience: "3 years",
-    isAvailable: false,
-  },
-];
+const { width, height } = Dimensions.get("window");
 
 export default function HomeScreen() {
-  const router = useRouter();
-  const [searchQuery, setSearchQuery] = useState("");
+  const handleServicePress = (serviceId: string) => {
+    console.log("Service pressed:", serviceId);
+  };
 
-  const handleNannyPress = (nannyId: string) => {
-    router.push(`/(main)/nanny-profile?id=${nannyId}` as any);
+  const handleBannerClose = (bannerId: string) => {
+    console.log("Banner closed:", bannerId);
   };
 
   return (
-    <SafeAreaView style={styles.container} edges={["top"]}>
-      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-        {/* Header */}
-        <View style={styles.header}>
-          <View>
-            <AppText style={styles.greeting}>Hello, Matthew 👋</AppText>
-            <AppText style={styles.subtitle}>Find your perfect nanny</AppText>
+    <View style={styles.container}>
+      {/* Map View */}
+      <MapView
+        provider={PROVIDER_GOOGLE}
+        style={styles.map}
+        initialRegion={{
+          latitude: 9.0579,
+          longitude: 7.4951,
+          latitudeDelta: 0.0922,
+          longitudeDelta: 0.0421,
+        }}
+      >
+        <Marker
+          coordinate={{
+            latitude: 9.0579,
+            longitude: 7.4951,
+          }}
+        >
+          <View style={styles.markerContainer}>
+            <Ionicons name="location" size={40} color={colors.error} />
           </View>
-        </View>
+        </Marker>
+      </MapView>
 
-        {/* Search Bar */}
-        <View style={styles.searchContainer}>
-          <Ionicons
-            name="search-outline"
-            size={20}
-            color={colors.gray400}
-            style={styles.searchIcon}
-          />
-          <TextInput
-            style={styles.searchInput}
-            placeholder="Search by name or location..."
-            placeholderTextColor={colors.gray400}
-            value={searchQuery}
-            onChangeText={setSearchQuery}
-          />
-        </View>
-
-        {/* Map Placeholder */}
-        <View style={styles.mapContainer}>
-          <View style={styles.mapPlaceholder}>
-            <AppText style={styles.mapText}>🗺️ Map View</AppText>
-            <AppText style={styles.mapSubtext}>Nannies near you</AppText>
-          </View>
-        </View>
-
-        {/* Available Nannies */}
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <AppText style={styles.sectionTitle}>Available Nannies</AppText>
-            <TouchableOpacity>
-              <AppText style={styles.seeAllText}>See all</AppText>
+      {/* Location Header */}
+      <View style={styles.locationHeaderContainer}>
+        <View style={styles.locationHeader}>
+          <View style={styles.locationInfo}>
+            <AppText style={styles.locationCity}>Abuja, Nigeria</AppText>
+            <TouchableOpacity activeOpacity={0.7}>
+              <AppText style={styles.editLocation}>Edit service location</AppText>
             </TouchableOpacity>
           </View>
-
-          {MOCK_NANNIES.map((nanny) => (
-            <TouchableOpacity
-              key={nanny.id}
-              style={styles.nannyCard}
-              onPress={() => handleNannyPress(nanny.id)}
-              activeOpacity={0.7}
-            >
-              <View style={styles.nannyImageContainer}>
-                <View style={styles.nannyImagePlaceholder}>
-                  <AppText style={styles.nannyInitials}>
-                    {nanny.name
-                      .split(" ")
-                      .map((n) => n[0])
-                      .join("")}
-                  </AppText>
-                </View>
-                {nanny.isAvailable && <View style={styles.availableBadge} />}
-              </View>
-
-              <View style={styles.nannyInfo}>
-                <View style={styles.nannyHeader}>
-                  <AppText style={styles.nannyName}>{nanny.name}</AppText>
-                  <View style={styles.ratingContainer}>
-                    <AppText style={styles.ratingText}>⭐ {nanny.rating}</AppText>
-                    <AppText style={styles.reviewsText}>({nanny.reviews})</AppText>
-                  </View>
-                </View>
-
-                <View style={styles.nannyDetails}>
-                  <View style={styles.detailItem}>
-                    <AppText style={styles.detailLabel}>Experience:</AppText>
-                    <AppText style={styles.detailValue}>{nanny.experience}</AppText>
-                  </View>
-                  <View style={styles.detailItem}>
-                    <AppText style={styles.detailLabel}>Distance:</AppText>
-                    <AppText style={styles.detailValue}>{nanny.distance}</AppText>
-                  </View>
-                </View>
-
-                <View style={styles.nannyFooter}>
-                  <AppText style={styles.priceText}>
-                    ${nanny.hourlyRate}
-                    <AppText style={styles.priceUnit}>/hour</AppText>
-                  </AppText>
-                  <View
-                    style={[
-                      styles.statusBadge,
-                      nanny.isAvailable
-                        ? styles.availableStatusBadge
-                        : styles.unavailableStatusBadge,
-                    ]}
-                  >
-                    <AppText
-                      style={[
-                        styles.statusText,
-                        nanny.isAvailable
-                          ? styles.availableStatusText
-                          : styles.unavailableStatusText,
-                      ]}
-                    >
-                      {nanny.isAvailable ? "Available" : "Busy"}
-                    </AppText>
-                  </View>
-                </View>
-              </View>
-            </TouchableOpacity>
-          ))}
+          <TouchableOpacity style={styles.cameraButton} activeOpacity={0.7}>
+            <Feather name="camera" size={24} color={colors.gray900} />
+            <View style={styles.cameraBadge}></View>
+          </TouchableOpacity>
         </View>
-      </ScrollView>
-    </SafeAreaView>
+      </View>
+
+      {/* Bottom Drawer */}
+      <BottomDrawer onServicePress={handleServicePress} onBannerClose={handleBannerClose} />
+    </View>
   );
 }
 
@@ -182,204 +71,67 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.white,
   },
-  scrollView: {
-    flex: 1,
+  map: {
+    width: width,
+    height: height,
   },
-  header: {
-    paddingHorizontal: 24,
-    paddingTop: 16,
-    paddingBottom: 20,
-  },
-  greeting: {
-    fontSize: 24,
-    fontWeight: "700",
-    color: colors.gray900,
-    marginBottom: 4,
-  },
-  subtitle: {
-    fontSize: 16,
-    color: colors.gray600,
-  },
-  searchContainer: {
-    paddingHorizontal: 24,
-    marginBottom: 20,
-    flexDirection: "row",
+  markerContainer: {
     alignItems: "center",
-    position: "relative",
-  },
-  searchIcon: {
-    position: "absolute",
-    left: 40,
-    zIndex: 1,
-  },
-  searchInput: {
-    flex: 1,
-    height: 48,
-    backgroundColor: colors.gray100,
-    borderRadius: 24,
-    paddingLeft: 48,
-    paddingRight: 20,
-    fontSize: 16,
-    color: colors.gray900,
-  },
-  mapContainer: {
-    paddingHorizontal: 24,
-    marginBottom: 24,
-  },
-  mapPlaceholder: {
-    height: 200,
-    backgroundColor: colors.gray100,
-    borderRadius: 16,
     justifyContent: "center",
-    alignItems: "center",
   },
-  mapText: {
-    fontSize: 32,
-    marginBottom: 8,
-  },
-  mapSubtext: {
-    fontSize: 14,
-    color: colors.gray600,
-  },
-  section: {
-    paddingHorizontal: 24,
-    marginBottom: 24,
-  },
-  sectionHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 16,
-  },
-  sectionTitle: {
-    fontSize: 20,
-    fontWeight: "700",
-    color: colors.gray900,
-  },
-  seeAllText: {
-    fontSize: 14,
-    fontWeight: "600",
-    color: colors.primary400,
-  },
-  nannyCard: {
-    flexDirection: "row",
+  locationHeaderContainer: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
     backgroundColor: colors.white,
-    borderRadius: 16,
-    padding: 16,
-    marginBottom: 16,
-    borderWidth: 1,
-    borderColor: colors.gray200,
+    paddingTop: 40,
+    paddingBottom: 8,
+    paddingHorizontal: 20,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 8,
-    elevation: 2,
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
+    elevation: 4,
+    zIndex: 10,
   },
-  nannyImageContainer: {
-    position: "relative",
-    marginRight: 16,
+  locationHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
   },
-  nannyImagePlaceholder: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    backgroundColor: colors.primary100,
+  locationInfo: {
+    flex: 1,
+  },
+  locationCity: {
+    fontSize: 14,
+    fontWeight: fontWeights.medium,
+    color: colors.gray900,
+    marginBottom: 0,
+  },
+  editLocation: {
+    fontSize: 12,
+    fontWeight: fontWeights.semiBold,
+    color: colors.primary400,
+    marginTop: -7,
+  },
+  cameraButton: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+
     justifyContent: "center",
     alignItems: "center",
   },
-  nannyInitials: {
-    fontSize: 24,
-    fontWeight: "700",
-    color: colors.primary600,
-  },
-  availableBadge: {
+  cameraBadge: {
     position: "absolute",
-    bottom: 4,
-    right: 4,
-    width: 16,
-    height: 16,
-    borderRadius: 8,
-    backgroundColor: colors.success,
-    borderWidth: 2,
-    borderColor: colors.white,
-  },
-  nannyInfo: {
-    flex: 1,
-  },
-  nannyHeader: {
-    marginBottom: 8,
-  },
-  nannyName: {
-    fontSize: 18,
-    fontWeight: "700",
-    color: colors.gray900,
-    marginBottom: 4,
-  },
-  ratingContainer: {
-    flexDirection: "row",
+    top: 8,
+    right: 8,
+    width: 18,
+    height: 18,
+    borderRadius: 9,
+    backgroundColor: colors.error,
+    justifyContent: "center",
     alignItems: "center",
-  },
-  ratingText: {
-    fontSize: 14,
-    fontWeight: "600",
-    color: colors.gray900,
-    marginRight: 4,
-  },
-  reviewsText: {
-    fontSize: 14,
-    color: colors.gray600,
-  },
-  nannyDetails: {
-    marginBottom: 12,
-  },
-  detailItem: {
-    flexDirection: "row",
-    marginBottom: 4,
-  },
-  detailLabel: {
-    fontSize: 14,
-    color: colors.gray600,
-    marginRight: 4,
-  },
-  detailValue: {
-    fontSize: 14,
-    fontWeight: "600",
-    color: colors.gray900,
-  },
-  nannyFooter: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  priceText: {
-    fontSize: 20,
-    fontWeight: "700",
-    color: colors.primary600,
-  },
-  priceUnit: {
-    fontSize: 14,
-    fontWeight: "400",
-    color: colors.gray600,
-  },
-  statusBadge: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 12,
-  },
-  availableStatusBadge: {
-    backgroundColor: colors.success + "20",
-  },
-  unavailableStatusBadge: {
-    backgroundColor: colors.gray200,
-  },
-  statusText: {
-    fontSize: 12,
-    fontWeight: "600",
-  },
-  availableStatusText: {
-    color: colors.success,
-  },
-  unavailableStatusText: {
-    color: colors.gray600,
   },
 });

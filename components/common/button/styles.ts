@@ -19,12 +19,13 @@ export const styles = StyleSheet.create({
 
   // Size variants & label
   small: {
-    height: 40,
+    height: 44,
     paddingHorizontal: 12,
   },
   small_label: {
-    ...typography.bodyMedium,
-    fontWeight: 500,
+    // ...typography.bodyMedium,
+    fontSize: 14,
+    fontWeight: 600,
   },
   medium: {
     height: 48,

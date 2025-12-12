@@ -1,7 +1,6 @@
 import { useRouter } from "expo-router";
 import React, { useEffect } from "react";
 import { Image, StyleSheet, View } from "react-native";
-import AppText from "~/components/common/app-text";
 import colors from "~/theme/colors";
 
 export default function SplashScreen() {
@@ -28,7 +27,7 @@ export default function SplashScreen() {
       </View>
 
       {/* App Name */}
-      <AppText style={styles.appName}>NannyNest</AppText>
+      {/* <AppText style={styles.appName}>NannyNest</AppText> */}
     </View>
   );
 }
@@ -44,14 +43,13 @@ const styles = StyleSheet.create({
     width: 120,
     height: 120,
     borderRadius: 60,
-    backgroundColor: colors.white,
     justifyContent: "center",
     alignItems: "center",
-    marginBottom: 24,
+    // marginBottom: 24,
   },
   logo: {
-    width: 80,
-    height: 80,
+    width: 90,
+    height: 90,
   },
   appName: {
     fontSize: 32,
