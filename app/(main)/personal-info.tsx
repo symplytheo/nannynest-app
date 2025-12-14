@@ -3,123 +3,90 @@ import { useRouter } from "expo-router";
 import React from "react";
 import { ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { ScreenHeader } from "~/components/common";
 import AppText from "~/components/common/app-text";
-import AppButton from "~/components/common/button";
 import colors from "~/theme/colors";
+import { fontWeights } from "~/theme/typography";
 
 export default function PersonalInfoScreen() {
   const router = useRouter();
 
   const personalInfo = {
+    firstName: "Matthew",
+    lastName: "Ola",
     fullName: "Matthew Ola",
-    email: "matthew.ola@email.com",
-    phone: "+234 801 234 5678",
-    address: "123 Main Street, Lagos, Nigeria",
-    dateOfBirth: "January 15, 1990",
+    email: "thenatthewola@gmail.com",
+    phone: "+234449492948",
   };
 
   return (
     <SafeAreaView style={styles.container} edges={["top"]}>
       {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-          <Ionicons name="chevron-back" size={28} color={colors.gray900} />
-        </TouchableOpacity>
-        <AppText style={styles.headerTitle}>Personal Info</AppText>
-        <View style={{ width: 40 }} />
-      </View>
+
+      <ScreenHeader title="Personal Info" />
 
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
         {/* Profile Picture */}
         <View style={styles.avatarSection}>
-          <View style={styles.avatar}>
-            <AppText style={styles.avatarText}>MO</AppText>
+          <View style={styles.avatarWrapper}>
+            <View style={styles.avatar}>
+              <Ionicons name="person" size={28} color={colors.black} />
+            </View>
+            <View style={styles.cameraIconContainer}>
+              <Ionicons name="camera" size={10} color={colors.white} />
+            </View>
           </View>
-          <TouchableOpacity style={styles.changePhotoButton}>
-            <Ionicons name="camera-outline" size={20} color={colors.primary400} />
-            <AppText style={styles.changePhotoText}>Change Photo</AppText>
+          <AppText style={styles.avatarHint}>
+            Add a profile photo so nannies can recognize you
+          </AppText>
+          <TouchableOpacity>
+            <AppText style={styles.changePhotoLink}>When can the nanny see my photo?</AppText>
           </TouchableOpacity>
         </View>
 
         {/* Info Cards */}
         <View style={styles.infoContainer}>
+          {/* Name */}
           <View style={styles.infoCard}>
             <View style={styles.infoRow}>
-              <Ionicons name="person-outline" size={20} color={colors.gray600} />
+              <Ionicons name="person-outline" size={20} color={colors.gray500} />
               <View style={styles.infoContent}>
-                <AppText style={styles.infoLabel}>Full Name</AppText>
                 <AppText style={styles.infoValue}>{personalInfo.fullName}</AppText>
               </View>
-              <TouchableOpacity>
-                <Ionicons name="create-outline" size={20} color={colors.primary400} />
+              <TouchableOpacity
+                onPress={() => router.push("/(main)/update-name" as any)}
+                activeOpacity={0.7}
+              >
+                <AppText style={styles.editButton}>Edit</AppText>
               </TouchableOpacity>
             </View>
           </View>
 
-          <View style={styles.infoCard}>
-            <View style={styles.infoRow}>
-              <Ionicons name="mail-outline" size={20} color={colors.gray600} />
-              <View style={styles.infoContent}>
-                <AppText style={styles.infoLabel}>Email</AppText>
-                <AppText style={styles.infoValue}>{personalInfo.email}</AppText>
-              </View>
-              <TouchableOpacity>
-                <Ionicons name="create-outline" size={20} color={colors.primary400} />
-              </TouchableOpacity>
-            </View>
-          </View>
-
+          {/* Phone */}
           <View style={styles.infoCard}>
             <View style={styles.infoRow}>
               <Ionicons name="call-outline" size={20} color={colors.gray600} />
               <View style={styles.infoContent}>
-                <AppText style={styles.infoLabel}>Phone Number</AppText>
                 <AppText style={styles.infoValue}>{personalInfo.phone}</AppText>
               </View>
-              <TouchableOpacity>
-                <Ionicons name="create-outline" size={20} color={colors.primary400} />
+              <TouchableOpacity
+                onPress={() => router.push("/(main)/update-phone" as any)}
+                activeOpacity={0.7}
+              >
+                <AppText style={styles.editButton}>Edit</AppText>
               </TouchableOpacity>
             </View>
           </View>
 
+          {/* Email (non-editable) */}
           <View style={styles.infoCard}>
             <View style={styles.infoRow}>
-              <Ionicons name="location-outline" size={20} color={colors.gray600} />
+              <Ionicons name="mail-outline" size={20} color={colors.gray600} />
               <View style={styles.infoContent}>
-                <AppText style={styles.infoLabel}>Address</AppText>
-                <AppText style={styles.infoValue}>{personalInfo.address}</AppText>
+                <AppText style={styles.infoValue}>{personalInfo.email}</AppText>
               </View>
-              <TouchableOpacity>
-                <Ionicons name="create-outline" size={20} color={colors.primary400} />
-              </TouchableOpacity>
             </View>
           </View>
-
-          <View style={styles.infoCard}>
-            <View style={styles.infoRow}>
-              <Ionicons name="calendar-outline" size={20} color={colors.gray600} />
-              <View style={styles.infoContent}>
-                <AppText style={styles.infoLabel}>Date of Birth</AppText>
-                <AppText style={styles.infoValue}>{personalInfo.dateOfBirth}</AppText>
-              </View>
-              <TouchableOpacity>
-                <Ionicons name="create-outline" size={20} color={colors.primary400} />
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-
-        <View style={styles.buttonContainer}>
-          <AppButton
-            label="Save Changes"
-            variant="filled"
-            color="brand"
-            onPress={() => {
-              console.log("Save changes");
-              router.back();
-            }}
-            fullWidth
-          />
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -131,88 +98,82 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.white,
   },
-  header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingHorizontal: 24,
-    paddingVertical: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.gray200,
-  },
-  backButton: {
-    width: 40,
-    height: 40,
-    justifyContent: "center",
-    alignItems: "flex-start",
-  },
-  headerTitle: {
-    fontSize: 18,
-    fontWeight: "700",
-    color: colors.gray900,
-  },
+
   scrollView: {
     flex: 1,
+    paddingHorizontal: 20,
+    marginTop: 20,
   },
   avatarSection: {
     alignItems: "center",
-    paddingVertical: 32,
+    paddingVertical: 24,
+    paddingHorizontal: 24,
+    borderWidth: 1,
+    borderColor: colors.gray300,
+    borderStyle: "dashed",
+    borderRadius: 16,
+  },
+  avatarWrapper: {
+    position: "relative",
+    marginBottom: 8,
   },
   avatar: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    backgroundColor: colors.primary400,
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: colors.gray100,
     justifyContent: "center",
     alignItems: "center",
-    marginBottom: 16,
   },
-  avatarText: {
-    fontSize: 36,
-    fontWeight: "700",
-    color: colors.white,
-  },
-  changePhotoButton: {
-    flexDirection: "row",
+  cameraIconContainer: {
+    position: "absolute",
+    bottom: 0,
+    right: 0,
+    width: 18,
+    height: 18,
+    borderRadius: 9,
+    backgroundColor: colors.gray500,
+    justifyContent: "center",
     alignItems: "center",
-    gap: 8,
   },
-  changePhotoText: {
-    fontSize: 16,
-    fontWeight: "600",
+  avatarHint: {
+    fontSize: 12,
+    fontWeight: fontWeights.semiBold,
+    color: colors.black,
+    textAlign: "center",
+  },
+  changePhotoLink: {
+    fontSize: 14,
+    fontWeight: fontWeights.semiBold,
     color: colors.primary400,
   },
   infoContainer: {
-    paddingHorizontal: 24,
     gap: 12,
+    paddingBottom: 32,
+    marginTop: 24,
   },
   infoCard: {
-    backgroundColor: colors.white,
     borderRadius: 12,
     padding: 16,
-    borderWidth: 1,
+    borderBottomWidth: 1,
     borderColor: colors.gray200,
   },
   infoRow: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 12,
+    gap: 16,
   },
   infoContent: {
     flex: 1,
   },
-  infoLabel: {
-    fontSize: 12,
-    color: colors.gray600,
-    marginBottom: 4,
-  },
   infoValue: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: colors.gray900,
+    fontSize: 14,
+    fontWeight: fontWeights.medium,
+    color: colors.gray700,
   },
-  buttonContainer: {
-    paddingHorizontal: 24,
-    paddingVertical: 32,
+  editButton: {
+    fontSize: 14,
+    fontWeight: fontWeights.semiBold,
+    color: colors.primary400,
   },
 });

@@ -9,7 +9,7 @@ export const styles = StyleSheet.create({
     ...typography.bodySmall,
     fontWeight: 500,
     color: colors.gray900,
-    marginBottom: 4,
+    // marginBottom: 2,
   },
   inputWrapper: {
     flexDirection: "row",

@@ -5,6 +5,7 @@ import { ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AppText from "~/components/common/app-text";
 import colors from "~/theme/colors";
+import { fontWeights } from "~/theme/typography";
 
 type MenuItem = {
   id: string;
@@ -16,13 +17,24 @@ type MenuItem = {
 
 const MENU_ITEMS: MenuItem[] = [
   { id: "1", label: "Personal Info", icon: "person-outline", route: "/(main)/personal-info" },
-  { id: "2", label: "Saved Nannies", icon: "heart-outline", route: "/(main)/saved-nannies" },
-  { id: "3", label: "Change password", icon: "lock-closed-outline" },
+  { id: "2", label: "Saved Tasks", icon: "checkbox-outline", route: "/(main)/saved-tasks" },
+  {
+    id: "3",
+    label: "Change password",
+    icon: "lock-closed-outline",
+    route: "/(main)/change-password",
+  },
   { id: "4", label: "Help & Support", icon: "help-circle-outline" },
   { id: "5", label: "Terms & Conditions", icon: "document-text-outline" },
   { id: "6", label: "Privacy policy", icon: "shield-checkmark-outline" },
   { id: "7", label: "Log out", icon: "log-out-outline", isDanger: false },
-  { id: "8", label: "Delete account", icon: "trash-outline", isDanger: true },
+  {
+    id: "8",
+    label: "Delete account",
+    icon: "trash-outline",
+    isDanger: true,
+    route: "/(main)/delete-account",
+  },
 ];
 
 export default function ProfileScreen() {
@@ -32,9 +44,6 @@ export default function ProfileScreen() {
     if (item.label === "Log out") {
       console.log("Logging out...");
       router.replace("/(auth)/login" as any);
-    } else if (item.label === "Delete account") {
-      console.log("Delete account...");
-      // TODO: Implement account deletion confirmation modal
     } else if (item.route) {
       console.log("Navigate to:", item.route);
       router.push(item.route as any);
@@ -57,7 +66,6 @@ export default function ProfileScreen() {
             </View>
           </View>
           <AppText style={styles.userName}>Matthew Ola</AppText>
-          <AppText style={styles.userEmail}>matthew.ola@email.com</AppText>
         </View>
 
         {/* Menu Items */}
@@ -73,15 +81,14 @@ export default function ProfileScreen() {
                 <View style={styles.menuIcon}>
                   <Ionicons
                     name={item.icon}
-                    size={22}
-                    color={item.isDanger ? colors.error : colors.primary400}
+                    size={24}
+                    color={item.isDanger ? colors.error : colors.gray500}
                   />
                 </View>
                 <AppText style={[styles.menuLabel, item.isDanger && styles.menuLabelDanger]}>
                   {item.label}
                 </AppText>
               </View>
-              <Ionicons name="chevron-forward" size={20} color={colors.gray400} />
             </TouchableOpacity>
           ))}
         </View>
@@ -101,42 +108,41 @@ const styles = StyleSheet.create({
   header: {
     paddingHorizontal: 24,
     paddingTop: 16,
-    paddingBottom: 20,
+    paddingBottom: 4,
   },
   title: {
-    fontSize: 28,
+    fontSize: 20,
     fontWeight: "700",
     color: colors.gray900,
   },
   profileCard: {
     alignItems: "center",
-    paddingVertical: 32,
+    paddingTop: 30,
+    paddingBottom: 32,
     paddingHorizontal: 24,
     marginHorizontal: 24,
-    marginBottom: 24,
-    backgroundColor: colors.gray50,
-    borderRadius: 16,
+    marginBottom: 4,
   },
   avatarContainer: {
     marginBottom: 16,
   },
   avatar: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
+    width: 64,
+    height: 64,
+    borderRadius: 32,
     backgroundColor: colors.primary400,
     justifyContent: "center",
     alignItems: "center",
   },
   avatarText: {
-    fontSize: 28,
+    fontSize: 20,
     fontWeight: "700",
     color: colors.white,
   },
   userName: {
     fontSize: 20,
     fontWeight: "700",
-    color: colors.gray900,
+    color: colors.black,
     marginBottom: 4,
   },
   userEmail: {
@@ -151,34 +157,28 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingVertical: 16,
-    paddingHorizontal: 16,
+    paddingTop: 16,
+    paddingBottom: 20,
+    paddingHorizontal: 12,
     backgroundColor: colors.white,
     borderRadius: 12,
     marginBottom: 8,
-    borderWidth: 1,
+    borderBottomWidth: 1,
     borderColor: colors.gray200,
   },
   menuItemLeft: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 12,
+    gap: 20,
   },
-  menuIcon: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: colors.gray100,
-    justifyContent: "center",
-    alignItems: "center",
-  },
+  menuIcon: {},
   menuIconText: {
     fontSize: 20,
   },
   menuLabel: {
-    fontSize: 16,
-    fontWeight: "500",
-    color: colors.gray900,
+    fontSize: 14,
+    fontWeight: fontWeights.medium,
+    color: colors.gray700,
   },
   menuLabelDanger: {
     color: colors.error,

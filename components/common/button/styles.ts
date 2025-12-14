@@ -99,10 +99,10 @@ export const styles = StyleSheet.create({
     textAlign: "center",
   },
   disabled: {
-    opacity: 0.5,
+    backgroundColor: colors.gray300,
   },
   disabledText: {
-    color: colors.black + "60", // 60% opacity for disabled text
+    color: colors.white,
   },
   icon: {
     marginHorizontal: 4,
