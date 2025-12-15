@@ -19,12 +19,13 @@ export const styles = StyleSheet.create({
 
   // Size variants & label
   small: {
-    height: 40,
+    height: 44,
     paddingHorizontal: 12,
   },
   small_label: {
-    ...typography.bodyMedium,
-    fontWeight: 500,
+    // ...typography.bodyMedium,
+    fontSize: 14,
+    fontWeight: 600,
   },
   medium: {
     height: 48,
@@ -98,10 +99,10 @@ export const styles = StyleSheet.create({
     textAlign: "center",
   },
   disabled: {
-    opacity: 0.5,
+    backgroundColor: colors.gray300,
   },
   disabledText: {
-    color: colors.black + "60", // 60% opacity for disabled text
+    color: colors.white,
   },
   icon: {
     marginHorizontal: 4,

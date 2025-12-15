@@ -33,7 +33,7 @@ const typography = {
   // body styles
   bodyLarge: createFontStyle(20, 32, 400),
   bodyMedium: createFontStyle(18, 30, 400),
-  bodySmall: createFontStyle(16, 26, 400),
+  bodySmall: createFontStyle(14, 24, 400),
   caption: createFontStyle(14, 22, 400),
 };
 

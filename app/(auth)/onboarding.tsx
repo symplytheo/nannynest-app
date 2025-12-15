@@ -1,149 +1,229 @@
+import { Ionicons } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import React, { useRef, useState } from "react";
 import {
+  Animated,
   Dimensions,
-  FlatList,
   ImageBackground,
-  NativeScrollEvent,
-  NativeSyntheticEvent,
   StyleSheet,
+  TouchableOpacity,
   View,
 } from "react-native";
+import { RoleSelectionCard } from "~/components/auth";
 import AppText from "~/components/common/app-text";
 import AppButton from "~/components/common/button";
 import colors from "~/theme/colors";
+import { fontWeights } from "~/theme/typography";
 
 const { width, height } = Dimensions.get("window");
 
-type OnboardingSlide = {
-  id: string;
-  title: string;
-  subtitle: string;
-  image: any; // Will use background image
-};
-
-const slides: OnboardingSlide[] = [
-  {
-    id: "1",
-    title: "Giving your kids the best child care",
-    subtitle: "We connect you with trusted, experienced nannies who provide exceptional care",
-    image: require("~/assets/images/partial-react-logo.png"), // Replace with actual background images
-  },
-  {
-    id: "2",
-    title: "Find trusted caregivers near you",
-    subtitle: "Browse profiles, read reviews, and connect with qualified nannies in your area",
-    image: require("~/assets/images/partial-react-logo.png"), // Replace with actual background images
-  },
-  {
-    id: "3",
-    title: "Schedule and manage with ease",
-    subtitle: "Book appointments, track schedules, and communicate seamlessly",
-    image: require("~/assets/images/partial-react-logo.png"), // Replace with actual background images
-  },
-];
-
 export default function OnboardingScreen() {
   const router = useRouter();
-  const flatListRef = useRef<FlatList>(null);
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [showRoleSelection, setShowRoleSelection] = useState(false);
 
-  const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-    const contentOffsetX = event.nativeEvent.contentOffset.x;
-    const index = Math.round(contentOffsetX / width);
-    setCurrentIndex(index);
-  };
-
-  const handleNext = () => {
-    if (currentIndex < slides.length - 1) {
-      flatListRef.current?.scrollToIndex({
-        index: currentIndex + 1,
-        animated: true,
-      });
-    } else {
-      handleGetStarted();
-    }
-  };
-
-  const handleSkip = () => {
-    router.replace("/(auth)/login" as any);
-  };
+  // Animation values
+  const backgroundScale = useRef(new Animated.Value(1)).current;
+  const bottomContentOpacity = useRef(new Animated.Value(1)).current;
+  const bottomContentTranslateY = useRef(new Animated.Value(0)).current;
+  const roleContentOpacity = useRef(new Animated.Value(0)).current;
+  const roleContentTranslateY = useRef(new Animated.Value(50)).current;
 
   const handleGetStarted = () => {
-    router.replace("/(auth)/login" as any);
+    // Animate transition to role selection
+    Animated.parallel([
+      // Zoom in background
+      Animated.timing(backgroundScale, {
+        toValue: 1.2,
+        duration: 400,
+        useNativeDriver: true,
+      }),
+      // Slide down and fade out bottom content
+      Animated.timing(bottomContentOpacity, {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: true,
+      }),
+      Animated.timing(bottomContentTranslateY, {
+        toValue: 100,
+        duration: 400,
+        useNativeDriver: true,
+      }),
+    ]).start(() => {
+      setShowRoleSelection(true);
+      // Slide up and fade in role selection
+      Animated.parallel([
+        Animated.timing(roleContentOpacity, {
+          toValue: 1,
+          duration: 400,
+          useNativeDriver: true,
+        }),
+        Animated.timing(roleContentTranslateY, {
+          toValue: 0,
+          duration: 400,
+          useNativeDriver: true,
+        }),
+      ]).start();
+    });
   };
 
-  const renderSlide = ({ item }: { item: OnboardingSlide }) => (
-    <View style={styles.slide}>
-      <ImageBackground source={item.image} style={styles.backgroundImage} resizeMode="cover">
-        {/* Overlay gradient */}
-        <View style={styles.overlay} />
+  const handleClose = () => {
+    // Reverse animation
+    Animated.parallel([
+      Animated.timing(roleContentOpacity, {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: true,
+      }),
+      Animated.timing(roleContentTranslateY, {
+        toValue: 50,
+        duration: 300,
+        useNativeDriver: true,
+      }),
+    ]).start(() => {
+      setShowRoleSelection(false);
+      // Reset to initial state
+      Animated.parallel([
+        Animated.timing(backgroundScale, {
+          toValue: 1,
+          duration: 400,
+          useNativeDriver: true,
+        }),
+        Animated.timing(bottomContentOpacity, {
+          toValue: 1,
+          duration: 400,
+          useNativeDriver: true,
+        }),
+        Animated.timing(bottomContentTranslateY, {
+          toValue: 0,
+          duration: 400,
+          useNativeDriver: true,
+        }),
+      ]).start();
+    });
+  };
 
-        <View style={styles.content}>
-          <View style={styles.textContainer}>
-            <AppText style={styles.title}>{item.title}</AppText>
-            <AppText style={styles.subtitle}>{item.subtitle}</AppText>
-          </View>
-        </View>
-      </ImageBackground>
-    </View>
-  );
+  const handleLogin = () => {
+    router.push("/(auth)/login" as any);
+  };
+
+  const handleClientRole = () => {
+    router.push("/(auth)/client-register" as any);
+  };
+
+  const handleNannyRole = () => {
+    console.log("Nanny role selected");
+    // TODO: Navigate to nanny registration
+  };
 
   return (
     <View style={styles.container}>
-      <FlatList
-        ref={flatListRef}
-        data={slides}
-        renderItem={renderSlide}
-        horizontal
-        pagingEnabled
-        showsHorizontalScrollIndicator={false}
-        onScroll={handleScroll}
-        scrollEventThrottle={16}
-        keyExtractor={(item) => item.id}
-      />
+      {/* Background Image with Zoom Animation */}
+      <Animated.View
+        style={[
+          styles.backgroundContainer,
+          {
+            transform: [{ scale: backgroundScale }],
+          },
+        ]}
+      >
+        <ImageBackground
+          source={require("~/assets/images/auth/onboarding_bg.png")}
+          style={styles.backgroundImage}
+          resizeMode="cover"
+        >
+          {/* Gradient Overlay */}
+          <LinearGradient
+            colors={["#8F1C5B80", "#29081A"]}
+            style={styles.gradient}
+            start={{ x: 0.5, y: 0 }}
+            end={{ x: 0.5, y: 1 }}
+          />
+        </ImageBackground>
+      </Animated.View>
 
-      {/* Bottom Controls */}
-      <View style={styles.bottomContainer}>
-        {/* Pagination Dots */}
-        <View style={styles.pagination}>
-          {slides.map((_, index) => (
-            <View
-              key={index}
-              style={[styles.dot, index === currentIndex ? styles.activeDot : styles.inactiveDot]}
-            />
-          ))}
-        </View>
+      {/* Content */}
+      <View style={styles.content}>
+        {/* Title  */}
+        {!showRoleSelection && (
+          <Animated.View
+            style={[
+              styles.titleContainer,
+              {
+                opacity: bottomContentOpacity,
+                transform: [{ translateY: bottomContentTranslateY }],
+              },
+            ]}
+          >
+            <AppText style={styles.title}>Giving your kids and elderly the best attention.</AppText>
+          </Animated.View>
+        )}
 
-        {/* Buttons */}
-        <View style={styles.buttonContainer}>
-          {currentIndex < slides.length - 1 ? (
-            <>
-              <AppButton
-                label="Skip"
-                variant="text"
-                color="brand"
-                onPress={handleSkip}
-                style={styles.skipButton}
-              />
-              <AppButton
-                label="Next"
-                variant="filled"
-                color="brand"
-                onPress={handleNext}
-                style={styles.nextButton}
-              />
-            </>
-          ) : (
+        {/* Initial Buttons (State 1) */}
+        {!showRoleSelection && (
+          <Animated.View
+            style={[
+              styles.bottomContainer,
+              {
+                opacity: bottomContentOpacity,
+                transform: [{ translateY: bottomContentTranslateY }],
+              },
+            ]}
+          >
             <AppButton
               label="Get Started"
               variant="filled"
               color="brand"
               onPress={handleGetStarted}
               fullWidth
+              style={styles.button}
+              size="small"
             />
-          )}
-        </View>
+            <AppButton
+              label="Log in"
+              variant="outlined"
+              color="brand"
+              onPress={handleLogin}
+              fullWidth
+              style={{ ...styles.button, ...styles.loginButton }}
+              size="small"
+            />
+          </Animated.View>
+        )}
+
+        {/* Role Selection (State 2) */}
+        {showRoleSelection && (
+          <Animated.View
+            style={[
+              styles.roleSelectionContainer,
+              {
+                opacity: roleContentOpacity,
+                transform: [{ translateY: roleContentTranslateY }],
+              },
+            ]}
+          >
+            {/* Close Button */}
+            <TouchableOpacity style={styles.closeButton} onPress={handleClose} activeOpacity={0.7}>
+              <View style={styles.closeButtonCircle}>
+                <Ionicons name="close" size={24} color="black" />
+              </View>
+            </TouchableOpacity>
+
+            {/* Role Cards */}
+            <View style={styles.roleCards}>
+              <RoleSelectionCard
+                title="I want to hire (Client)"
+                role="client"
+                onPress={handleClientRole}
+              />
+              <RoleSelectionCard
+                title="I want to work (Nanny)"
+                role="nanny"
+                onPress={handleNannyRole}
+              />
+            </View>
+          </Animated.View>
+        )}
       </View>
     </View>
   );
@@ -152,82 +232,63 @@ export default function OnboardingScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.white,
+    backgroundColor: colors.primary900,
   },
-  slide: {
-    width,
-    height,
+  backgroundContainer: {
+    ...StyleSheet.absoluteFillObject,
+    height: height * 0.75, // 75% of screen height
   },
   backgroundImage: {
     flex: 1,
     width: "100%",
     height: "100%",
   },
-  overlay: {
+  gradient: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(0, 0, 0, 0.3)",
   },
   content: {
     flex: 1,
     justifyContent: "flex-end",
-    paddingHorizontal: 24,
-    paddingBottom: 200,
+    paddingHorizontal: 20,
+    paddingTop: height * 0.5,
+    paddingBottom: 40,
   },
-  textContainer: {
-    gap: 16,
+  titleContainer: {
+    marginBottom: 34,
   },
   title: {
-    fontSize: 32,
-    fontWeight: "700",
+    fontSize: 50,
+    fontWeight: fontWeights.bold,
     color: colors.white,
-    lineHeight: 40,
-  },
-  subtitle: {
-    fontSize: 16,
-    fontWeight: "400",
-    color: colors.white,
-    lineHeight: 24,
-    opacity: 0.9,
+    lineHeight: 51,
+    letterSpacing: -1,
   },
   bottomContainer: {
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    right: 0,
-    backgroundColor: colors.white,
-    paddingHorizontal: 24,
-    paddingVertical: 32,
-    paddingBottom: 48,
-    borderTopLeftRadius: 32,
-    borderTopRightRadius: 32,
+    gap: 16,
   },
-  pagination: {
-    flexDirection: "row",
+  button: {
+    marginBottom: 0,
+    height: 48,
+  },
+  loginButton: {
+    backgroundColor: colors.white,
+    borderColor: colors.white,
+  },
+  roleSelectionContainer: {
+    alignItems: "center",
+  },
+  closeButton: {
+    marginBottom: 40,
+  },
+  closeButtonCircle: {
+    width: 52,
+    height: 52,
+    borderRadius: 26,
+    backgroundColor: colors.white,
     justifyContent: "center",
     alignItems: "center",
-    gap: 8,
-    marginBottom: 24,
   },
-  dot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-  },
-  activeDot: {
-    backgroundColor: colors.primary400,
-    width: 24,
-  },
-  inactiveDot: {
-    backgroundColor: colors.gray300,
-  },
-  buttonContainer: {
-    flexDirection: "row",
-    gap: 12,
-  },
-  skipButton: {
-    flex: 1,
-  },
-  nextButton: {
-    flex: 1,
+  roleCards: {
+    width: "100%",
   },
 });

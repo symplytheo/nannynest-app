@@ -26,7 +26,16 @@ const colors = {
   // semantic / base
   background: "#f0f2f5", // gray100
   error: "#CE3C55",
+
+  error500: "#CB1A14",
+
   success: "#37D7AF",
+  success50: "#E7F6EC",
+  success400: "#0F973D",
+  success600: "#04802E",
+
+  secondary50: "#E3EFFC",
+  secondary400: "#1671D9",
   black: "#121212",
   white: "#FFFFFF",
 };

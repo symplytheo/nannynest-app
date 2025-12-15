@@ -5,6 +5,7 @@ import { ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AppText from "~/components/common/app-text";
 import colors from "~/theme/colors";
+import { fontWeights } from "~/theme/typography";
 
 type MenuItem = {
   id: string;
@@ -15,19 +16,26 @@ type MenuItem = {
 };
 
 const MENU_ITEMS: MenuItem[] = [
-  { id: "1", label: "Personal Info", icon: "person-outline", route: "/(nanny)/personal-info" },
-  { id: "2", label: "My Wallet", icon: "wallet-outline", route: "/(nanny)/wallet" },
+  { id: "1", label: "Personal Info", icon: "person-outline", route: "/(main)/personal-info" },
+  { id: "2", label: "About", icon: "information-circle-outline", route: "/(nanny)/about" },
+  { id: "3", label: "Review and Ratings", icon: "star-outline", route: "/(nanny)/review-ratings" },
   {
-    id: "3",
-    label: "My Documents",
-    icon: "document-text-outline",
-    route: "/(nanny)/kyc-documents",
+    id: "4",
+    label: "Change password",
+    icon: "lock-closed-outline",
+    route: "/(main)/change-password",
   },
-  { id: "4", label: "Availability", icon: "calendar-outline" },
-  { id: "5", label: "Payment Settings", icon: "card-outline" },
-  { id: "6", label: "Help & Support", icon: "help-circle-outline" },
-  { id: "7", label: "Terms & Conditions", icon: "document-outline" },
+  { id: "5", label: "Terms & Conditions", icon: "document-text-outline" },
+  { id: "6", label: "Privacy policy", icon: "shield-checkmark-outline" },
+  { id: "7", label: "Help & Support", icon: "help-circle-outline" },
   { id: "8", label: "Log out", icon: "log-out-outline", isDanger: false },
+  {
+    id: "9",
+    label: "Delete account",
+    icon: "trash-outline",
+    isDanger: true,
+    route: "/(main)/delete-account",
+  },
 ];
 
 export default function NannyProfileScreen() {
@@ -50,19 +58,36 @@ export default function NannyProfileScreen() {
           <AppText style={styles.title}>Profile</AppText>
         </View>
 
+        {/* Profile Card */}
         <View style={styles.profileCard}>
           <View style={styles.avatarContainer}>
             <View style={styles.avatar}>
-              <AppText style={styles.avatarText}>SJ</AppText>
+              <AppText style={styles.avatarText}>MO</AppText>
             </View>
+            <View style={styles.onlineIndicator} />
           </View>
-          <AppText style={styles.userName}>Sarah Johnson</AppText>
-          <AppText style={styles.userEmail}>sarah.johnson@email.com</AppText>
-          <View style={styles.ratingContainer}>
-            <AppText style={styles.ratingText}>⭐ 4.8 Rating</AppText>
+          <View>
+            <AppText style={styles.userName}>Matthew Ola</AppText>
+            <View style={styles.ratingBadge}>
+              <Ionicons name="star" size={16} color={"#DCB620"} />
+              <AppText style={styles.ratingText}>4.3</AppText>
+            </View>
           </View>
         </View>
 
+        {/* Stats */}
+        <View style={styles.statsContainer}>
+          <View style={styles.statItem}>
+            <AppText style={styles.statValue}>354</AppText>
+            <AppText style={styles.statLabel}>Orders completed</AppText>
+          </View>
+          <View style={styles.statItem}>
+            <AppText style={styles.statValue}>30,854</AppText>
+            <AppText style={styles.statLabel}>Hours completed</AppText>
+          </View>
+        </View>
+
+        {/* Menu Items */}
         <View style={styles.menuContainer}>
           {MENU_ITEMS.map((item) => (
             <TouchableOpacity
@@ -72,18 +97,17 @@ export default function NannyProfileScreen() {
               activeOpacity={0.7}
             >
               <View style={styles.menuItemLeft}>
-                <View style={styles.menuIcon}>
+                <View>
                   <Ionicons
                     name={item.icon}
-                    size={22}
-                    color={item.isDanger ? colors.error : colors.primary400}
+                    size={20}
+                    color={item.isDanger ? colors.error : colors.gray700}
                   />
                 </View>
                 <AppText style={[styles.menuLabel, item.isDanger && styles.menuLabelDanger]}>
                   {item.label}
                 </AppText>
               </View>
-              <Ionicons name="chevron-forward" size={20} color={colors.gray400} />
             </TouchableOpacity>
           ))}
         </View>
@@ -103,60 +127,90 @@ const styles = StyleSheet.create({
   header: {
     paddingHorizontal: 24,
     paddingTop: 16,
-    paddingBottom: 20,
+    paddingBottom: 4,
   },
   title: {
-    fontSize: 28,
+    fontSize: 20,
     fontWeight: "700",
     color: colors.gray900,
   },
   profileCard: {
     alignItems: "center",
-    paddingVertical: 32,
+    flexDirection: "row",
+    gap: 16,
+    paddingTop: 30,
+    paddingBottom: 32,
     paddingHorizontal: 24,
-    marginHorizontal: 24,
-    marginBottom: 24,
-    backgroundColor: colors.gray50,
-    borderRadius: 16,
+    // marginHorizontal: 24,
+    marginBottom: 4,
   },
-  avatarContainer: {
-    marginBottom: 16,
-  },
+  avatarContainer: {},
   avatar: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
+    width: 64,
+    height: 64,
+    borderRadius: 32,
     backgroundColor: colors.primary400,
     justifyContent: "center",
     alignItems: "center",
   },
   avatarText: {
-    fontSize: 28,
-    fontWeight: "700",
+    fontSize: 20,
+    fontWeight: fontWeights.bold,
     color: colors.white,
+  },
+  onlineIndicator: {
+    position: "absolute",
+    bottom: 2,
+    right: 2,
+    width: 16,
+    height: 16,
+    borderRadius: 8,
+    backgroundColor: colors.success,
+    borderWidth: 2,
+    borderColor: colors.white,
   },
   userName: {
     fontSize: 20,
-    fontWeight: "700",
+    fontWeight: fontWeights.bold,
     color: colors.gray900,
-    marginBottom: 4,
   },
-  userEmail: {
-    fontSize: 14,
-    color: colors.gray600,
-    marginBottom: 12,
-  },
-  ratingContainer: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    backgroundColor: colors.white,
-    borderRadius: 20,
+  ratingBadge: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
   },
   ratingText: {
-    fontSize: 14,
-    fontWeight: "600",
+    fontSize: 12,
+    fontWeight: fontWeights.regular,
     color: colors.gray900,
   },
+  statsContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    marginHorizontal: 20,
+    marginBottom: 16,
+    gap: 12,
+  },
+  statItem: {
+    flex: 1,
+    // alignItems: "center",
+    padding: 16,
+    borderRadius: 12,
+    backgroundColor: colors.gray75,
+  },
+  statValue: {
+    fontSize: 24,
+    fontWeight: fontWeights.bold,
+    color: colors.gray700,
+    marginBottom: 2,
+  },
+  statLabel: {
+    fontSize: 12,
+    fontWeight: fontWeights.regular,
+    color: colors.gray500,
+  },
+
   menuContainer: {
     paddingHorizontal: 24,
     paddingBottom: 24,
@@ -165,34 +219,28 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingVertical: 16,
-    paddingHorizontal: 16,
+    paddingTop: 16,
+    paddingBottom: 20,
+    paddingHorizontal: 12,
     backgroundColor: colors.white,
     borderRadius: 12,
     marginBottom: 8,
-    borderWidth: 1,
+    borderBottomWidth: 1,
     borderColor: colors.gray200,
   },
   menuItemLeft: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 12,
+    gap: 20,
   },
-  menuIcon: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: colors.gray100,
-    justifyContent: "center",
-    alignItems: "center",
-  },
+  menuIcon: {},
   menuIconText: {
     fontSize: 20,
   },
   menuLabel: {
-    fontSize: 16,
-    fontWeight: "500",
-    color: colors.gray900,
+    fontSize: 14,
+    fontWeight: fontWeights.medium,
+    color: colors.gray700,
   },
   menuLabelDanger: {
     color: colors.error,
