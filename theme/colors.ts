@@ -34,6 +34,7 @@ const colors = {
   success75: "#B5E3C4",
   success400: "#0F973D",
   success600: "#04802E",
+  success700: "#036B26",
 
   secondary50: "#E3EFFC",
   secondary400: "#1671D9",

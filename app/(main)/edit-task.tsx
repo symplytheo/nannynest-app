@@ -35,6 +35,12 @@ export default function EditTaskScreen() {
   const router = useRouter();
   const params = useLocalSearchParams();
 
+  // Context can be "saved" (for saved tasks) or "order" (for order tasks)
+  const context = (params.context as string) || "saved";
+  const taskId = params.id as string;
+
+  // In a real app, you would fetch the task data based on taskId and context
+  // For now, using mock data
   const { control, handleSubmit } = useForm<EditTaskFormData>({
     defaultValues: {
       title: "Special Days",
@@ -69,12 +75,13 @@ export default function EditTaskScreen() {
 
   const onSubmit = async (data: EditTaskFormData) => {
     const taskData = {
-      id: params.id || Date.now().toString(),
+      id: taskId || Date.now().toString(),
       title: data.title,
       items: items.filter((item) => item.text.trim() !== ""), // Only save items with text
+      context, // Include context to know where this came from
     };
 
-    console.log("Save task:", taskData);
+    console.log(`Save ${context} task:`, taskData);
 
     router.back();
   };
