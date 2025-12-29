@@ -61,6 +61,7 @@ export const styles = StyleSheet.create({
     borderWidth: 1.5,
     backgroundColor: "transclient",
   },
+
   outlined_brand: { borderColor: colors.primary400 },
   outlined_error: { borderColor: colors.error },
   outlined_success: { borderColor: colors.success },

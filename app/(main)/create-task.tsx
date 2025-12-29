@@ -1,5 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import {
@@ -33,6 +33,10 @@ type CreateTaskFormData = {
 
 export default function CreateTaskScreen() {
   const router = useRouter();
+  const params = useLocalSearchParams();
+
+  // Context can be "saved" (for saved tasks) or "order" (for order tasks)
+  const context = (params.context as string) || "saved";
 
   const { control, handleSubmit } = useForm<CreateTaskFormData>({
     defaultValues: {
@@ -68,9 +72,10 @@ export default function CreateTaskScreen() {
       id: Date.now().toString(),
       title: data.title,
       items: items.filter((item) => item.text.trim() !== ""),
+      context, // Include context to know where this came from
     };
 
-    console.log("Create task:", taskData);
+    console.log(`Create ${context} task:`, taskData);
 
     router.back();
   };

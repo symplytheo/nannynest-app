@@ -24,11 +24,11 @@ export default function SavedTasksScreen() {
   ]);
 
   const handleTaskPress = (taskId: string) => {
-    router.push(`/(main)/task-details?id=${taskId}` as any);
+    router.push(`/(main)/edit-task?id=${taskId}&context=saved` as any);
   };
 
   const handleCreateTask = () => {
-    router.push("/(main)/create-task" as any);
+    router.push("/(main)/create-task?context=saved" as any);
   };
 
   return (
