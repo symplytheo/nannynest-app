@@ -40,7 +40,7 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   large_label: {
-    ...typography.bodyLarge,
+    ...typography.bodyMedium,
     fontWeight: 600,
   },
 

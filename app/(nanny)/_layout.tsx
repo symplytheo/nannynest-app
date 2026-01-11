@@ -8,10 +8,18 @@ export default function NannyLayout() {
       }}
     >
       <Stack.Screen name="(tabs)" />
-      <Stack.Screen name="kyc-verification" />
-      <Stack.Screen name="kyc-documents" />
-      <Stack.Screen name="kyc-personal-info" />
-      <Stack.Screen name="kyc-status" />
+      <Stack.Screen name="about" />
+      <Stack.Screen name="bank-accounts" />
+      <Stack.Screen name="earnings" />
+      <Stack.Screen name="onboarding-checklist" />
+      <Stack.Screen name="order-details" />
+      <Stack.Screen name="review-ratings" />
+      <Stack.Screen name="transaction-details" />
+      <Stack.Screen name="transactions" />
+      <Stack.Screen name="onboarding/complete-profile" />
+      <Stack.Screen name="onboarding/face-verification" />
+      <Stack.Screen name="onboarding/submission-status" />
+      <Stack.Screen name="onboarding/upload-licenses" />
     </Stack>
   );
 }

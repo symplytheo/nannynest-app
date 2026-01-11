@@ -155,83 +155,85 @@ export default function UploadLicensesScreen() {
       <Modal
         visible={showAddForm}
         animationType="slide"
-        presentationStyle="pageSheet"
+        transparent
         onRequestClose={() => setShowAddForm(false)}
       >
-        <KeyboardAvoidingView
-          style={styles.modalContainer}
-          behavior={Platform.OS === "ios" ? "padding" : "height"}
-        >
-          <View style={styles.modalHeader}>
-            <AppText style={styles.modalTitle}>Add Certification</AppText>
-            <TouchableOpacity onPress={() => setShowAddForm(false)} style={styles.closeButton}>
-              <Ionicons name="close" size={28} color={colors.gray900} />
-            </TouchableOpacity>
-          </View>
-
-          <ScrollView
-            style={styles.modalContent}
-            contentContainerStyle={styles.modalScrollContent}
-            showsVerticalScrollIndicator={false}
-            keyboardShouldPersistTaps="handled"
+        <View style={styles.modalOverlay}>
+          <KeyboardAvoidingView
+            style={styles.modalContainer}
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
           >
-            <View style={styles.form}>
-              {/* Certification Name */}
-              <ControlledTextField
-                control={control}
-                name="certificationName"
-                label="Name of certification"
-                placeholder="Ex: Certificate of nanny"
-                rules={{
-                  required: "Certification name is required",
-                }}
-              />
-
-              {/* Issuing Organization */}
-              <ControlledTextField
-                control={control}
-                name="issuingOrganization"
-                label="Issuing organization"
-                placeholder="Ex: NannyNest"
-                rules={{
-                  required: "Issuing organization is required",
-                }}
-              />
-
-              {/* Issue Date */}
-              <ControlledTextField
-                control={control}
-                name="issueDate"
-                label="Issue Date"
-                placeholder="DD/MM/YYYY"
-                rules={{
-                  required: "Issue date is required",
-                }}
-              />
-
-              {/* Upload Certificate */}
-              <View style={styles.uploadSection}>
-                <AppText style={styles.uploadLabel}>Upload certificate</AppText>
-                <AppText style={styles.uploadSubtext}>JPEG format • Max: 5MB</AppText>
-                <TouchableOpacity style={styles.uploadButton} onPress={handleUploadCertificate}>
-                  <Ionicons name="cloud-upload-outline" size={24} color={colors.gray600} />
-                  <AppText style={styles.uploadButtonText}>Upload</AppText>
-                </TouchableOpacity>
-              </View>
-
-              {/* Add Certificate Button */}
-              <AppButton
-                label="Add Certification"
-                variant="filled"
-                color="brand"
-                onPress={handleSubmit(onSubmit)}
-                fullWidth
-                size="small"
-                style={styles.addCertButton}
-              />
+            <View style={styles.modalHeader}>
+              <AppText style={styles.modalTitle}>Add Certification</AppText>
+              <TouchableOpacity onPress={() => setShowAddForm(false)} style={styles.closeButton}>
+                <Ionicons name="close" size={28} color={colors.gray900} />
+              </TouchableOpacity>
             </View>
-          </ScrollView>
-        </KeyboardAvoidingView>
+
+            <ScrollView
+              style={styles.modalContent}
+              contentContainerStyle={styles.modalScrollContent}
+              showsVerticalScrollIndicator={false}
+              keyboardShouldPersistTaps="handled"
+            >
+              <View style={styles.form}>
+                {/* Certification Name */}
+                <ControlledTextField
+                  control={control}
+                  name="certificationName"
+                  label="Name of certification"
+                  placeholder="Ex: Certificate of nanny"
+                  rules={{
+                    required: "Certification name is required",
+                  }}
+                />
+
+                {/* Issuing Organization */}
+                <ControlledTextField
+                  control={control}
+                  name="issuingOrganization"
+                  label="Issuing organization"
+                  placeholder="Ex: NannyNest"
+                  rules={{
+                    required: "Issuing organization is required",
+                  }}
+                />
+
+                {/* Issue Date */}
+                <ControlledTextField
+                  control={control}
+                  name="issueDate"
+                  label="Issue Date"
+                  placeholder="DD/MM/YYYY"
+                  rules={{
+                    required: "Issue date is required",
+                  }}
+                />
+
+                {/* Upload Certificate */}
+                <View style={styles.uploadSection}>
+                  <AppText style={styles.uploadLabel}>Upload certificate</AppText>
+                  <AppText style={styles.uploadSubtext}>JPEG format • Max: 5MB</AppText>
+                  <TouchableOpacity style={styles.uploadButton} onPress={handleUploadCertificate}>
+                    <Ionicons name="cloud-upload-outline" size={24} color={colors.gray600} />
+                    <AppText style={styles.uploadButtonText}>Upload</AppText>
+                  </TouchableOpacity>
+                </View>
+
+                {/* Add Certificate Button */}
+                <AppButton
+                  label="Add Certification"
+                  variant="filled"
+                  color="brand"
+                  onPress={handleSubmit(onSubmit)}
+                  fullWidth
+                  size="small"
+                  style={styles.addCertButton}
+                />
+              </View>
+            </ScrollView>
+          </KeyboardAvoidingView>
+        </View>
       </Modal>
     </>
   );
@@ -242,7 +244,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 16,
-    padding: 16,
+    padding: 8,
     borderRadius: 12,
     borderWidth: 1,
     borderStyle: "dashed",
@@ -257,7 +259,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "500",
     color: colors.gray900,
-    marginBottom: 4,
   },
   addButtonSubtext: {
     fontSize: 13,
@@ -273,7 +274,7 @@ const styles = StyleSheet.create({
     gap: 12,
     padding: 16,
     borderRadius: 12,
-    backgroundColor: colors.gray200,
+    backgroundColor: colors.gray100,
   },
   certificateIcon: {
     width: 48,
@@ -344,9 +345,16 @@ const styles = StyleSheet.create({
   skipButton: {
     marginTop: 0,
   },
-  modalContainer: {
+  modalOverlay: {
     flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    justifyContent: "flex-end",
+  },
+  modalContainer: {
     backgroundColor: colors.white,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    maxHeight: "90%",
   },
   modalHeader: {
     flexDirection: "row",
@@ -366,9 +374,10 @@ const styles = StyleSheet.create({
     padding: 4,
   },
   modalContent: {
-    flex: 1,
+    flexGrow: 0,
   },
   modalScrollContent: {
     padding: 20,
+    paddingBottom: 40,
   },
 });

@@ -44,6 +44,7 @@ export default function LoginScreen() {
       if (data.email.toLowerCase().includes("client")) {
         router.replace("/(main)/(tabs)");
       } else {
+        console.log("Nanny login");
         router.replace("/(nanny)/onboarding-checklist");
         // router.replace("/(nanny)/(tabs)");
       }

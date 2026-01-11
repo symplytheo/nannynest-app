@@ -28,7 +28,7 @@ export default function OrderCard({ order, onPress }: OrderCardProps) {
   const config = statusConfig[order.status];
 
   return (
-    <View style={styles.container}>
+    <TouchableOpacity style={styles.container} onPress={onPress} activeOpacity={0.7}>
       <View style={styles.content}>
         <View style={styles.header}>
           <AppText style={styles.date}>
@@ -46,7 +46,7 @@ export default function OrderCard({ order, onPress }: OrderCardProps) {
       <TouchableOpacity style={styles.iconButton} onPress={onPress} activeOpacity={0.7}>
         <Ionicons name="refresh" size={20} color={colors.gray900} />
       </TouchableOpacity>
-    </View>
+    </TouchableOpacity>
   );
 }
 

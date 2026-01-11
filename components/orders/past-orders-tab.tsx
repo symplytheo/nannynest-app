@@ -51,7 +51,10 @@ export default function PastOrdersTab({ context }: PastOrdersTabProps) {
             <OrderCard
               key={order.id}
               order={order}
-              onPress={() => router.push(getDetailsRoute(order.id) as any)}
+              onPress={() => {
+                console.log("Clieced");
+                router.push(getDetailsRoute(order.id) as any);
+              }}
             />
           ))}
         </View>

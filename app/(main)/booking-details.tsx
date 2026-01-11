@@ -1,51 +1,50 @@
 import { Ionicons } from "@expo/vector-icons";
-import { useLocalSearchParams, useRouter } from "expo-router";
-import React from "react";
-import { useForm } from "react-hook-form";
-import { ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
+import { useRouter } from "expo-router";
+import React, { useState } from "react";
+import { Modal, ScrollView, StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AppText from "~/components/common/app-text";
 import AppButton from "~/components/common/button";
-import ControlledTextField from "~/components/form/controlled-textfield";
 import colors from "~/theme/colors";
+import { fontWeights } from "~/theme/typography";
 
-type BookingFormData = {
-  date: string;
-  startTime: string;
-  endTime: string;
-  numberOfChildren: string;
-  specialInstructions: string;
+type OrderItem = {
+  count: number;
+  label: string;
+  time: string;
 };
 
 export default function BookingDetailsScreen() {
   const router = useRouter();
-  const { nannyId } = useLocalSearchParams();
 
-  const { control, handleSubmit } = useForm<BookingFormData>({
-    defaultValues: {
-      date: "Nov 25, 2025",
-      startTime: "10:00 AM",
-      endTime: "2:00 PM",
-      numberOfChildren: "1",
-      specialInstructions: "",
-    },
-  });
+  const [promoCode, setPromoCode] = useState("");
+  const [showPromoModal, setShowPromoModal] = useState(false);
+  const [paymentReceived, setPaymentReceived] = useState(false);
 
-  // Mock nanny data
-  const nanny = {
-    name: "Sarah Johnson",
-    hourlyRate: 25,
+  // Mock order data
+  const orderDetails: OrderItem[] = [
+    { count: 2, label: "Baby (below 3yrs)", time: "8AM-4PM" },
+    { count: 1, label: "Kid (3-12yrs)", time: "8AM-4PM" },
+  ];
+
+  const subtotal = 50;
+  const vat = 4.21;
+  const serviceCharge = 6.25;
+  const total = 60.46;
+
+  const handleContinue = () => {
+    // Simulate payment received
+    // setPaymentReceived(true);
+    setTimeout(() => {
+      setPaymentReceived(false);
+      router.push("/(main)/booking-checklist" as any);
+    }, 2000);
   };
 
-  // Simple duration calculation (mock - in real app, parse time strings properly)
-  const duration = 4; // hours
-  const subtotal = duration * nanny.hourlyRate;
-  const serviceFee = subtotal * 0.1;
-  const total = subtotal + serviceFee;
-
-  const onSubmit = (data: BookingFormData) => {
-    console.log("Booking data:", data);
-    router.push(`/(main)/booking-confirmation?nannyId=${nannyId}` as any);
+  const handlePromoSubmit = () => {
+    // Handle promo code submission
+    console.log("Promo code:", promoCode);
+    setShowPromoModal(false);
   };
 
   return (
@@ -53,126 +52,137 @@ export default function BookingDetailsScreen() {
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-          <Ionicons name="chevron-back" size={28} color={colors.gray900} />
+          <Ionicons name="close" size={28} color={colors.gray900} />
         </TouchableOpacity>
-        <AppText style={styles.headerTitle}>Booking Details</AppText>
+        <AppText style={styles.headerTitle}>Order Review</AppText>
         <View style={{ width: 40 }} />
       </View>
 
-      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-        {/* Nanny Info */}
-        <View style={styles.nannyCard}>
-          <View style={styles.avatarPlaceholder}>
-            <AppText style={styles.avatarText}>SJ</AppText>
+      {/* Payment Received Banner */}
+      {paymentReceived && (
+        <View style={styles.successBanner}>
+          <View style={styles.successContent}>
+            <Ionicons name="checkmark-circle" size={20} color={colors.success600} />
+            <View>
+              <AppText style={styles.successTitle}>Payment Received</AppText>
+              <AppText style={styles.successSubtitle}>Your payment is confirmed</AppText>
+            </View>
           </View>
-          <View style={styles.nannyInfo}>
-            <AppText style={styles.nannyName}>{nanny.name}</AppText>
-            <AppText style={styles.nannyRate}>${nanny.hourlyRate}/hour</AppText>
+          <TouchableOpacity onPress={() => setPaymentReceived(false)}>
+            <Ionicons name="close" size={20} color={colors.gray600} />
+          </TouchableOpacity>
+        </View>
+      )}
+
+      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+        {/* Payment Method */}
+        <View style={styles.section}>
+          <AppText style={styles.sectionTitle}>Payment method</AppText>
+          <View style={styles.radioOption}>
+            <View style={styles.radioSelected}>
+              <View style={styles.radioDot} />
+            </View>
+            <AppText style={styles.radioLabel}>Debit card</AppText>
           </View>
         </View>
 
-        {/* Booking Form */}
-        <View style={styles.form}>
-          {/* Date Selection */}
-          <View>
-            <AppText style={styles.inputLabel}>Date</AppText>
-            <TouchableOpacity style={styles.dateTimeInput}>
-              <View style={styles.dateTimeLeft}>
-                <Ionicons name="calendar-outline" size={20} color={colors.primary400} />
-                <AppText style={styles.dateTimeText}>Nov 25, 2025</AppText>
-              </View>
-              <Ionicons name="chevron-down" size={20} color={colors.gray400} />
+        {/* Service Address */}
+        <View style={styles.section}>
+          <AppText style={styles.sectionTitle}>Service address</AppText>
+          <TouchableOpacity
+            style={styles.addressCard}
+            onPress={() => router.push("/(main)/edit-service-location" as any)}
+          >
+            <Ionicons name="location" size={20} color={colors.primary600} />
+            <AppText style={styles.addressText}>15b, Olajide George street</AppText>
+            <Ionicons name="chevron-forward" size={20} color={colors.gray400} />
+          </TouchableOpacity>
+        </View>
+
+        {/* Order Details */}
+        <View style={styles.section}>
+          <AppText style={styles.sectionTitle}>Order details</AppText>
+          {orderDetails.map((item, index) => (
+            <View key={index} style={styles.orderItem}>
+              <AppText style={styles.orderItemText}>
+                {item.count} {item.label}
+              </AppText>
+              <AppText style={styles.orderItemTime}>{item.time}</AppText>
+            </View>
+          ))}
+        </View>
+
+        {/* Order Summary */}
+        <View style={styles.section}>
+          <AppText style={styles.sectionTitle}>Order summary</AppText>
+
+          <View style={styles.summaryRow}>
+            <AppText style={styles.summaryLabel}>Subtotal</AppText>
+            <AppText style={styles.summaryValue}>${subtotal}</AppText>
+          </View>
+
+          <View style={styles.summaryRow}>
+            <AppText style={styles.summaryLabel}>VAT</AppText>
+            <AppText style={styles.summaryValue}>${vat.toFixed(2)}</AppText>
+          </View>
+
+          <View style={styles.summaryRow}>
+            <AppText style={styles.summaryLabel}>Service charge</AppText>
+            <AppText style={styles.summaryValue}>${serviceCharge.toFixed(2)}</AppText>
+          </View>
+        </View>
+
+        {/* Promo Code */}
+        <View style={styles.section}>
+          <View style={styles.promoRow}>
+            <AppText style={styles.sectionTitle}>Promo code</AppText>
+            <TouchableOpacity onPress={() => setShowPromoModal(true)}>
+              <AppText style={styles.promoLink}>Enter a code</AppText>
             </TouchableOpacity>
           </View>
-
-          {/* Time Selection */}
-          <View style={styles.timeRow}>
-            <View style={{ flex: 1 }}>
-              <AppText style={styles.inputLabel}>Start Time</AppText>
-              <TouchableOpacity style={styles.dateTimeInput}>
-                <View style={styles.dateTimeLeft}>
-                  <Ionicons name="time-outline" size={20} color={colors.primary400} />
-                  <AppText style={styles.dateTimeText}>10:00 AM</AppText>
-                </View>
-                <Ionicons name="chevron-down" size={20} color={colors.gray400} />
-              </TouchableOpacity>
-            </View>
-
-            <View style={{ flex: 1 }}>
-              <AppText style={styles.inputLabel}>End Time</AppText>
-              <TouchableOpacity style={styles.dateTimeInput}>
-                <View style={styles.dateTimeLeft}>
-                  <Ionicons name="time-outline" size={20} color={colors.primary400} />
-                  <AppText style={styles.dateTimeText}>2:00 PM</AppText>
-                </View>
-                <Ionicons name="chevron-down" size={20} color={colors.gray400} />
-              </TouchableOpacity>
-            </View>
-          </View>
-
-          {/* Number of Children */}
-          <ControlledTextField
-            control={control}
-            name="numberOfChildren"
-            label="Number of Children"
-            placeholder="Enter number"
-            keyboardType="number-pad"
-            rules={{ required: "Number of children is required" }}
-          />
-
-          {/* Special Instructions */}
-          <ControlledTextField
-            control={control}
-            name="specialInstructions"
-            label="Special Instructions (Optional)"
-            placeholder="Any special requirements or notes..."
-            multiline
-            numberOfLines={4}
-            style={styles.textArea}
-          />
         </View>
 
-        {/* Price Breakdown */}
-        <View style={styles.priceCard}>
-          <AppText style={styles.priceCardTitle}>Price Details</AppText>
-
-          <View style={styles.priceRow}>
-            <AppText style={styles.priceLabel}>
-              ${nanny.hourlyRate} × {duration.toFixed(1)} hours
-            </AppText>
-            <AppText style={styles.priceValue}>${subtotal.toFixed(2)}</AppText>
-          </View>
-
-          <View style={styles.priceRow}>
-            <AppText style={styles.priceLabel}>Service fee (10%)</AppText>
-            <AppText style={styles.priceValue}>${serviceFee.toFixed(2)}</AppText>
-          </View>
-
-          <View style={styles.priceDivider} />
-
-          <View style={styles.priceRow}>
-            <AppText style={styles.totalLabel}>Total</AppText>
-            <AppText style={styles.totalValue}>${total.toFixed(2)}</AppText>
-          </View>
+        {/* Total */}
+        <View style={styles.totalSection}>
+          <AppText style={styles.totalLabel}>Total</AppText>
+          <AppText style={styles.totalValue}>${total.toFixed(2)}</AppText>
         </View>
 
-        <View style={{ height: 100 }} />
+        <View style={{ height: 120 }} />
       </ScrollView>
 
       {/* Bottom Bar */}
       <View style={styles.bottomBar}>
-        <View style={styles.totalContainer}>
-          <AppText style={styles.totalBottomLabel}>Total</AppText>
-          <AppText style={styles.totalBottomValue}>${total.toFixed(2)}</AppText>
-        </View>
-        <AppButton
-          label="Continue"
-          variant="filled"
-          color="brand"
-          onPress={handleSubmit(onSubmit)}
-          style={styles.continueButton}
-        />
+        <AppText style={styles.termsText}>
+          By tapping the button, you agree to Nannynest Terms of Service and Payment Terms
+        </AppText>
+        <AppButton label="Continue" onPress={handleContinue} />
       </View>
+
+      {/* Promo Code Modal */}
+      <Modal
+        visible={showPromoModal}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={() => setShowPromoModal(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <AppText style={styles.modalTitle}>Enter Promo code</AppText>
+
+            <TextInput
+              style={styles.promoInput}
+              placeholder="Enter code"
+              placeholderTextColor={colors.gray400}
+              value={promoCode}
+              onChangeText={setPromoCode}
+              autoCapitalize="characters"
+            />
+
+            <AppButton label="Submit" onPress={handlePromoSubmit} />
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }
@@ -186,7 +196,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingHorizontal: 24,
+    paddingHorizontal: 20,
     paddingVertical: 16,
     borderBottomWidth: 1,
     borderBottomColor: colors.gray200,
@@ -199,164 +209,182 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     fontSize: 18,
-    fontWeight: "700",
+    fontWeight: fontWeights.bold,
     color: colors.gray900,
+  },
+  successBanner: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    backgroundColor: colors.success50,
+    borderLeftWidth: 4,
+    borderLeftColor: colors.success600,
+  },
+  successContent: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+  },
+  successTitle: {
+    fontSize: 14,
+    fontWeight: fontWeights.semiBold,
+    color: colors.gray900,
+  },
+  successSubtitle: {
+    fontSize: 12,
+    color: colors.gray600,
   },
   scrollView: {
     flex: 1,
   },
-  nannyCard: {
-    flexDirection: "row",
-    alignItems: "center",
-    padding: 16,
-    marginHorizontal: 24,
-    marginTop: 20,
-    backgroundColor: colors.gray50,
-    borderRadius: 16,
+  section: {
+    paddingHorizontal: 20,
+    paddingTop: 12,
+    paddingBottom: 24,
+    borderTopWidth: 1,
+    borderTopColor: colors.gray200,
   },
-  avatarPlaceholder: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    backgroundColor: colors.primary100,
-    justifyContent: "center",
-    alignItems: "center",
-    marginRight: 16,
-  },
-  avatarText: {
-    fontSize: 20,
-    fontWeight: "700",
-    color: colors.primary600,
-  },
-  nannyInfo: {
-    flex: 1,
-  },
-  nannyName: {
-    fontSize: 18,
-    fontWeight: "700",
-    color: colors.gray900,
-    marginBottom: 4,
-  },
-  nannyRate: {
+  sectionTitle: {
     fontSize: 16,
-    fontWeight: "600",
-    color: colors.primary600,
-  },
-  form: {
-    paddingHorizontal: 24,
-    marginTop: 24,
-    gap: 20,
-  },
-  inputLabel: {
-    fontSize: 16,
-    fontWeight: "600",
+    fontWeight: fontWeights.semiBold,
     color: colors.gray900,
-    marginBottom: 8,
-  },
-  dateTimeInput: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    height: 56,
-    paddingHorizontal: 16,
-    backgroundColor: colors.gray50,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: colors.gray200,
-  },
-  dateTimeLeft: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
-  },
-  dateTimeText: {
-    fontSize: 16,
-    color: colors.gray900,
-    fontWeight: "500",
-  },
-  dateTimeIcon: {
-    fontSize: 20,
-  },
-  timeRow: {
-    flexDirection: "row",
-    gap: 12,
-  },
-  textArea: {
-    height: 120,
-    textAlignVertical: "top",
-  },
-  priceCard: {
-    marginHorizontal: 24,
-    marginTop: 24,
-    padding: 20,
-    backgroundColor: colors.gray50,
-    borderRadius: 16,
-  },
-  priceCardTitle: {
-    fontSize: 18,
-    fontWeight: "700",
-    color: colors.gray900,
-    marginBottom: 16,
-  },
-  priceRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
     marginBottom: 12,
   },
-  priceLabel: {
-    fontSize: 16,
-    color: colors.gray700,
+  radioOption: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
   },
-  priceValue: {
+  radioSelected: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: colors.primary600,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  radioDot: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: colors.primary600,
+  },
+  radioLabel: {
     fontSize: 16,
-    fontWeight: "600",
     color: colors.gray900,
   },
-  priceDivider: {
-    height: 1,
-    backgroundColor: colors.gray300,
-    marginVertical: 12,
+  addressCard: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    paddingVertical: 12,
+  },
+  addressText: {
+    flex: 1,
+    fontSize: 16,
+    color: colors.gray900,
+  },
+  orderItem: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingVertical: 8,
+  },
+  orderItemText: {
+    fontSize: 16,
+    color: colors.gray900,
+  },
+  orderItemTime: {
+    fontSize: 16,
+    color: colors.gray600,
+  },
+  summaryRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingVertical: 8,
+  },
+  summaryLabel: {
+    fontSize: 16,
+    color: colors.gray600,
+  },
+  summaryValue: {
+    fontSize: 16,
+    color: colors.gray900,
+  },
+  promoRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  promoLink: {
+    fontSize: 14,
+    fontWeight: fontWeights.semiBold,
+    color: colors.primary600,
+  },
+  totalSection: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: 20,
+    paddingTop: 0,
+    paddingBottom: 16,
   },
   totalLabel: {
     fontSize: 18,
-    fontWeight: "700",
+    fontWeight: fontWeights.bold,
     color: colors.gray900,
   },
   totalValue: {
     fontSize: 20,
-    fontWeight: "700",
-    color: colors.primary600,
+    fontWeight: fontWeights.bold,
+    color: colors.gray900,
   },
   bottomBar: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: 24,
+    paddingHorizontal: 20,
     paddingVertical: 16,
+    paddingBottom: 24,
     backgroundColor: colors.white,
     borderTopWidth: 1,
     borderTopColor: colors.gray200,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: -2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 5,
+    gap: 16,
   },
-  totalContainer: {
-    flex: 1,
-  },
-  totalBottomLabel: {
-    fontSize: 14,
+  termsText: {
+    fontSize: 12,
     color: colors.gray600,
-    marginBottom: 2,
+    textAlign: "center",
+    lineHeight: 18,
   },
-  totalBottomValue: {
-    fontSize: 20,
-    fontWeight: "700",
-    color: colors.primary600,
-  },
-  continueButton: {
+  modalOverlay: {
     flex: 1,
-    marginLeft: 16,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    justifyContent: "flex-end",
+  },
+  modalContent: {
+    backgroundColor: colors.white,
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    paddingHorizontal: 20,
+    paddingTop: 24,
+    paddingBottom: 40,
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: fontWeights.bold,
+    color: colors.gray900,
+    marginBottom: 24,
+  },
+  promoInput: {
+    height: 56,
+    borderWidth: 1,
+    borderColor: colors.gray300,
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    fontSize: 16,
+    color: colors.gray900,
+    marginBottom: 24,
   },
 });

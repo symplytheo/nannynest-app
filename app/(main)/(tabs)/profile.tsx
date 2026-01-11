@@ -5,7 +5,7 @@ import { ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AppText from "~/components/common/app-text";
 import colors from "~/theme/colors";
-import { fontWeights } from "~/theme/typography";
+import typography, { fontWeights } from "~/theme/typography";
 
 type MenuItem = {
   id: string;
@@ -65,7 +65,7 @@ export default function ProfileScreen() {
               <AppText style={styles.avatarText}>MO</AppText>
             </View>
           </View>
-          <AppText style={styles.userName}>Matthew Ola</AppText>
+          <AppText style={styles.userName}>Matthew Olawale</AppText>
         </View>
 
         {/* Menu Items */}
@@ -140,8 +140,7 @@ const styles = StyleSheet.create({
     color: colors.white,
   },
   userName: {
-    fontSize: 20,
-    fontWeight: "700",
+    ...typography.headingSmall,
     color: colors.black,
     marginBottom: 4,
   },

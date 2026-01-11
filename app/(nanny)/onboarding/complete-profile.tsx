@@ -26,13 +26,9 @@ interface ProfileFormData {
 
 export default function CompleteProfileScreen() {
   const router = useRouter();
-  const [profileImage, setProfileImage] = useState<string | null>(null);
+  const [profileImage] = useState<string | null>(null);
 
-  const {
-    control,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<ProfileFormData>({
+  const { control, handleSubmit } = useForm<ProfileFormData>({
     defaultValues: {
       firstName: "",
       lastName: "",

@@ -16,6 +16,7 @@ export default function VerifyEmailScreen() {
 
   const handleProceed = () => {
     // Navigate to the next step or handle proceed action
+    router.push("/(nanny)/onboarding/submission-status");
   };
 
   const handleStepAction = (stepId: number, path: string) => {
@@ -110,7 +111,7 @@ export default function VerifyEmailScreen() {
               variant="filled"
               color="brand"
               onPress={handleProceed}
-              disabled={!allCompleted}
+              disabled={!!allCompleted}
               fullWidth
               size="small"
               style={styles.verifyButton}

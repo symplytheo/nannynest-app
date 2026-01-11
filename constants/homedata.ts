@@ -45,8 +45,8 @@ export const INFO_BANNERS: InfoBannerData[] = [
   {
     id: "2",
     icon: "star-outline",
-    title: "Top rated nannies",
-    subtitle: "View profiles",
+    title: "Handle your nanny better",
+    subtitle: "Read more",
     bgColor: colors.secondary50,
     iconColor: colors.secondary400,
   },

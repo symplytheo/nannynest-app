@@ -1,10 +1,12 @@
 import { Ionicons } from "@expo/vector-icons";
 import Feather from "@expo/vector-icons/Feather";
+import { router } from "expo-router";
 import React from "react";
 import { Dimensions, StyleSheet, TouchableOpacity, View } from "react-native";
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import AppText from "~/components/common/app-text";
 import { BottomDrawer } from "~/components/main/home";
+import { SERVICES } from "~/constants/homedata";
 import colors from "~/theme/colors";
 import { fontWeights } from "~/theme/typography";
 
@@ -12,7 +14,14 @@ const { width, height } = Dimensions.get("window");
 
 export default function HomeScreen() {
   const handleServicePress = (serviceId: string) => {
-    console.log("Service pressed:", serviceId);
+    // Find the service to pass its title
+    const service = SERVICES.find((s: any) => s.id === serviceId);
+    const serviceTitle = service?.title || "";
+
+    router.push({
+      pathname: "/(main)/service-booking",
+      params: { serviceId, serviceTitle },
+    } as any);
   };
 
   const handleBannerClose = (bannerId: string) => {
@@ -47,12 +56,13 @@ export default function HomeScreen() {
       {/* Location Header */}
       <View style={styles.locationHeaderContainer}>
         <View style={styles.locationHeader}>
-          <View style={styles.locationInfo}>
+          <TouchableOpacity
+            style={styles.locationInfo}
+            onPress={() => router.push("/(main)/edit-service-location")}
+          >
             <AppText style={styles.locationCity}>Abuja, Nigeria</AppText>
-            <TouchableOpacity activeOpacity={0.7}>
-              <AppText style={styles.editLocation}>Edit service location</AppText>
-            </TouchableOpacity>
-          </View>
+            <AppText style={styles.editLocation}>Edit service location</AppText>
+          </TouchableOpacity>
           <TouchableOpacity style={styles.cameraButton} activeOpacity={0.7}>
             <Feather name="camera" size={24} color={colors.gray900} />
             <View style={styles.cameraBadge}></View>
