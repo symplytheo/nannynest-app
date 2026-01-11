@@ -60,8 +60,8 @@ export default function ServiceBookingScreen() {
   });
 
   const [elderlyCount, setElderlyCount] = useState(0);
-  const [startTime, setStartTime] = useState("9:00 AM");
-  const [endTime, setEndTime] = useState("4:00 PM");
+  const [startTime] = useState("9:00 AM");
+  const [endTime] = useState("4:00 PM");
 
   const isElderlyCare = serviceTitle === "Elderly Care" || serviceId === "2";
 
