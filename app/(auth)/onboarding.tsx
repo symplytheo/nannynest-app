@@ -16,7 +16,7 @@ import AppButton from "~/components/common/button";
 import colors from "~/theme/colors";
 import { fontWeights } from "~/theme/typography";
 
-const { width, height } = Dimensions.get("window");
+const { height } = Dimensions.get("window");
 
 export default function OnboardingScreen() {
   const router = useRouter();
@@ -108,12 +108,11 @@ export default function OnboardingScreen() {
   };
 
   const handleClientRole = () => {
-    router.push("/(auth)/client-register" as any);
+    router.push("/(auth)/register?type=client" as any);
   };
 
   const handleNannyRole = () => {
-    console.log("Nanny role selected");
-    // TODO: Navigate to nanny registration
+    router.push("/(auth)/register?type=nanny" as any);
   };
 
   return (

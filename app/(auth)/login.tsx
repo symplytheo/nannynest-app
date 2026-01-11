@@ -44,7 +44,8 @@ export default function LoginScreen() {
       if (data.email.toLowerCase().includes("client")) {
         router.replace("/(main)/(tabs)");
       } else {
-        router.replace("/(nanny)/(tabs)");
+        router.replace("/(nanny)/onboarding-checklist");
+        // router.replace("/(nanny)/(tabs)");
       }
     } catch (error) {
       console.error("Login error:", error);

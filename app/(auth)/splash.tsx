@@ -25,9 +25,6 @@ export default function SplashScreen() {
           resizeMode="contain"
         />
       </View>
-
-      {/* App Name */}
-      {/* <AppText style={styles.appName}>NannyNest</AppText> */}
     </View>
   );
 }

@@ -29,7 +29,7 @@ const colors = {
   error400: "#D42620",
   error500: "#CB1A14",
 
-  success: "#37D7AF",
+  success: "#0F973D",
   success50: "#E7F6EC",
   success75: "#B5E3C4",
   success400: "#0F973D",

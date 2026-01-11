@@ -19,6 +19,7 @@ export default function VerifyEmailScreen() {
 
   // Determine if this is for registration or password reset
   const isRegistration = params.type === "registration";
+  const isNanny = params.userType === "nanny";
 
   const { control, handleSubmit } = useForm<VerifyEmailFormData>({
     defaultValues: {
@@ -37,10 +38,12 @@ export default function VerifyEmailScreen() {
       // Navigate based on type
       if (isRegistration) {
         // After registration verification, go to login
-        router.replace("/(auth)/login" as any);
+
+        if (isNanny) router.replace("/(nanny)/onboarding-checklist");
+        else router.replace("/(main)/(tabs)");
       } else {
         // After password reset verification, go to set new password
-        router.push("/(auth)/create-new-password" as any);
+        router.push("/(auth)/create-new-password");
       }
     } catch (error) {
       console.error("Verification error:", error);
@@ -49,7 +52,7 @@ export default function VerifyEmailScreen() {
     }
   };
 
-  const title = isRegistration ? "Verify Email" : "Enter code";
+  const title = isRegistration ? `Verify ${isNanny ? "Nanny" : "Client"} Email` : "Enter code";
   const description = isRegistration
     ? "Enter the 6-digit OTP sent to your email."
     : "Enter the 6-digit code sent to your email.";

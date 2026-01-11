@@ -12,7 +12,6 @@ export default function AuthLayout() {
       <Stack.Screen name="onboarding" />
       <Stack.Screen name="login" />
       <Stack.Screen name="register" />
-      <Stack.Screen name="role-selection-login" />
       <Stack.Screen name="reset-password" />
       <Stack.Screen name="verify-reset" />
       <Stack.Screen name="create-new-password" />
